@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{4F913019-7D13-4CEF-9695-D6F678CAF276}") = "PSPersonio", "PSPersonio\PSPersonio.csproj", "{1A8CE7FE-06A4-4179-9825-E9CD961ED899}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1A8CE7FE-06A4-4179-9825-E9CD961ED899}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A8CE7FE-06A4-4179-9825-E9CD961ED899}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A8CE7FE-06A4-4179-9825-E9CD961ED899}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A8CE7FE-06A4-4179-9825-E9CD961ED899}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A56F1657-0EF2-4DA2-AD2F-0906240A5251}
+	EndGlobalSection
+EndGlobal
