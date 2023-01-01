@@ -30,16 +30,19 @@
     )
 
     # Assemblies that must be loaded prior to importing this module
-    # RequiredAssemblies = @('bin\PSPersonio.dll')
+    RequiredAssemblies = @('bin\PSPersonio.dll')
 
     # Type files (.ps1xml) to be loaded when importing this module
-    # TypesToProcess = @('xml\PSPersonio.Types.ps1xml')
+    #TypesToProcess = @('xml\PSPersonio.Types.ps1xml')
 
     # Format files (.ps1xml) to be loaded when importing this module
-    # FormatsToProcess = @('xml\PSPersonio.Format.ps1xml')
+    #FormatsToProcess = @('xml\PSPersonio.Format.ps1xml')
 
     # Functions to export from this module
-    FunctionsToExport = ''
+    FunctionsToExport = @(
+        'Connect-Personio',
+        'Invoke-PersRequest'
+    )
 
     # Cmdlets to export from this module
     CmdletsToExport   = ''
