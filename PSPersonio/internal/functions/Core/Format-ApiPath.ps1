@@ -9,6 +9,9 @@
     .PARAMETER Path
         Path to format
 
+    .PARAMETER QueryParameter
+        A hashtable for all the parameters to the api route
+
     .EXAMPLE
         Format-ApiPath -Path $ApiPath
 
@@ -30,7 +33,11 @@
         $Path,
 
         [Personio.Core.AccessToken]
-        $Token
+        $Token,
+
+        [hashtable]
+        $QueryParameter
+
     )
 
     if (-not $Token) { $Token = $script:PersonioToken }
@@ -46,6 +53,17 @@
         Write-PSFMessage -Level System -Message "Add API prefix, finished formatting path to '$($apiPath)'"
     } else {
         Write-PSFMessage -Level System -Message "Prefix API path already present, finished formatting"
+    }
+
+    # If specified, process hashtable QueryParameters to valid parameters into uri
+    if($QueryParameter) {
+        $apiPath = "$($apiPath)?"
+        $i = 0
+        foreach ($key in $QueryParameter.Keys) {
+            if($i -gt 0) { $apiPath = "$($apiPath)&" }
+            $apiPath = "$($apiPath)$($key)=$($QueryParameter[$Key])"
+            $i++
+        }
     }
 
     # Output Result
