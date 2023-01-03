@@ -4,7 +4,11 @@
         Invoke-PersRequest
 
     .DESCRIPTION
-        Invoke a API request to Personio service
+        Basic function to invoke a API request to Personio service
+
+        The function returns "raw data" from the API as a PSCustomObject.
+        Titerally the function is a basic function within the core of the module.
+        Most of the other functions, rely on Invoke-PresRequest to provide convenient data and functionality.
 
     .PARAMETER Type
         Type of web request
@@ -43,6 +47,7 @@
         PositionalBinding = $true,
         ConfirmImpact = 'Medium'
     )]
+    [OutputType([PSCustomObject])]
     param (
         [Parameter(Mandatory = $true)]
         [ValidateSet("GET", "POST", "PUT", "DELETE")]
@@ -85,7 +90,7 @@
         [string]$partnerIdentifier = Get-PSFConfigValue -FullName 'PSPersonio.WebClient.PartnerIdentifier' -Fallback ""
 
         # Format api path / api route to call
-        $ApiPath = Format-ApiPath -Path $ApiPath -Token $Token
+        $ApiPath = Format-ApiPath -Path $ApiPath -Token $Token -QueryParameter $QueryParameter
 
         # Format body
         if ($Body) {
@@ -117,15 +122,14 @@
         }
 
         if ($pscmdlet.ShouldProcess("$($Type) web REST call against URL '$($paramInvoke.Uri)'", "Invoke")) {
-            Write-PSFMessage -Level Verbose -Message "Invoke $($Type) web REST call against URL '$($paramInvoke.Uri)'" -Tag "Personio", "Webrequest"
+            Write-PSFMessage -Level Verbose -Message "Invoke $($Type) web REST call against URL '$($paramInvoke.Uri)'" -Tag "WebRequest"
 
             try {
                 $response = Invoke-WebRequest @paramInvoke -UseBasicParsing
                 $responseContent = $response.Content | ConvertFrom-Json
                 Write-PSFMessage -Level System -Message "API Response: $($responseContent.success)"
             } catch {
-                $response = $invokeError.Message | ConvertFrom-Json
-                Write-PSFMessage -Level Error -Message "$($response.Error.text) - $($response.Error.localizedText)" -Exception $response.Error.type -Tag "REST call $($Type)"
+                Write-PSFMessage -Level Error -Message "$($invokeError.Message) (StatusDescription:$($invokeError.ErrorRecord.Exception.Response.StatusDescription), Uri:$($ApiPath))" -Exception $invokeError.ErrorRecord.Exception -Tag "WebRequest", "Error", "API failure" -EnableException $true -PSCmdlet $pscmdlet
                 return
             }
 
@@ -137,10 +141,13 @@
             Register-AccessToken -Token $token
             Write-PSFMessage -Level Verbose -Message "Updated AccessToken to Id '$($token.TokenID)'. Now valid to $($token.TimeStampExpires.toString())" -Tag "Connection", "AccessToken", "Update"
 
-            # ToDo: Check and implement pagination
+            # Check pagination
+            if($responseContent.metadata) {
+                Write-PSFMessage -Level VeryVerbose -Message "Pagination detected! Retrieved records: $([Array]($responseContent.data).count) of $($responseContent.metadata.total_elements) total records (api call hast limit of $($responseContent.limit) records and started on record number $($responseContent.offset))" -Tag "WebRequest", "Pagination"
+            }
 
             # Output data
-            $responseContent.data
+            $responseContent
         }
 
     }
