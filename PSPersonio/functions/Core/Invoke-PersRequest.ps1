@@ -1,4 +1,4 @@
-﻿function Invoke-PersRequest {
+﻿function Invoke-PERSRequest {
     <#
     .Synopsis
         Invoke-PersRequest
@@ -32,7 +32,7 @@
         If this switch is enabled, you will be prompted for confirmation before executing any operations that change state.
 
     .EXAMPLE
-        Invoke-PersRequest -Type GET -ApiPath "company/employees"
+        PS C:\> Invoke-PersRequest -Type GET -ApiPath "company/employees"
 
         Invoke a request to API route 'company/employees' as a GET call
 
