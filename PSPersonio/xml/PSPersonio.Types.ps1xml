@@ -1,37 +1,128 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Types>
-  <!-- Foo.Bar -->
-  <Type>
-    <Name>Deserialized.Foo.Bar</Name>
-    <Members>
-      <MemberSet>
-        <Name>PSStandardMembers</Name>
+    <!-- Personio.Absence.AbsenceType -->
+    <Type>
+        <Name>Deserialized.Personio.Absence.AbsenceType</Name>
         <Members>
-          <NoteProperty>
-            <Name>
-              TargetTypeForDeserialization
-            </Name>
-            <Value>
-              Foo.Bar
-            </Value>
-          </NoteProperty>
+            <MemberSet>
+                <Name>PSStandardMembers</Name>
+                <Members>
+                    <NoteProperty>
+                        <Name>
+                            TargetTypeForDeserialization
+                        </Name>
+                        <Value>
+                            Personio.Absence.AbsenceType
+                        </Value>
+                    </NoteProperty>
+                </Members>
+            </MemberSet>
         </Members>
-      </MemberSet>
-    </Members>
-  </Type>
-  <Type>
-    <Name>Foo.Bar</Name>
-    <Members>
-      <CodeProperty IsHidden="true">
-        <Name>SerializationData</Name>
-        <GetCodeReference>
-          <TypeName>PSFramework.Serialization.SerializationTypeConverter</TypeName>
-          <MethodName>GetSerializationData</MethodName>
-        </GetCodeReference>
-      </CodeProperty>
-    </Members>
-    <TypeConverter>
-      <TypeName>PSFramework.Serialization.SerializationTypeConverter</TypeName>
-    </TypeConverter>
-  </Type>
+    </Type>
+    <Type>
+        <Name>Personio.Absence.AbsenceType</Name>
+        <Members>
+            <ScriptProperty>
+                <Name>Name</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.name
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.name = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>Unit</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.unit
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.unit = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>Category</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.category
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.category = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>IsHalfDayRequestEnabled</Name>
+                <GetScriptBlock>
+                    [bool]::Parse( $this.BaseObject.half_day_requests_enabled )
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.half_day_requests_enabled = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>IsCertificationRequired</Name>
+                <GetScriptBlock>
+                    [bool]::Parse( $this.BaseObject.certification_required )
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.certification_required = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>CertificationSubmissionTimeframe</Name>
+                <GetScriptBlock>
+                    [int]::Parse( $this.BaseObject.certification_submission_timeframe )
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.certification_submission_timeframe = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>CertificationSubmissionTimeSpan</Name>
+                <GetScriptBlock>
+                    $timeSpanParam = @{
+                        $this.BaseObject.unit = [int]::Parse( $this.BaseObject.certification_submission_timeframe )
+                    }
+                    New-TimeSpan @timeSpanParam
+                </GetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>SubstituteOption</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.substitute_option
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.substitute_option = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>IsApprovalRequired</Name>
+                <GetScriptBlock>
+                    [bool]::Parse( $this.BaseObject.approval_required )
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.approval_required = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <CodeProperty IsHidden="true">
+                <Name>SerializationData</Name>
+                <GetCodeReference>
+                    <TypeName>PSFramework.Serialization.SerializationTypeConverter</TypeName>
+                    <MethodName>GetSerializationData</MethodName>
+                </GetCodeReference>
+            </CodeProperty>
+        </Members>
+        <TypeConverter>
+            <TypeName>PSFramework.Serialization.SerializationTypeConverter</TypeName>
+        </TypeConverter>
+    </Type>
+
 </Types>

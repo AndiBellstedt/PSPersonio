@@ -3,7 +3,7 @@
     RootModule        = 'PSPersonio.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '0.0.1'
+    ModuleVersion     = '0.0.2'
 
     # ID used to uniquely identify this module
     GUID              = 'd12fa74a-f464-41fc-a4a6-2bf9d9f9c0fa'
@@ -33,15 +33,19 @@
     RequiredAssemblies = @('bin\PSPersonio.dll')
 
     # Type files (.ps1xml) to be loaded when importing this module
-    #TypesToProcess = @('xml\PSPersonio.Types.ps1xml')
+    TypesToProcess = @('xml\PSPersonio.Types.ps1xml')
 
     # Format files (.ps1xml) to be loaded when importing this module
-    #FormatsToProcess = @('xml\PSPersonio.Format.ps1xml')
+    FormatsToProcess = @('xml\PSPersonio.Format.ps1xml')
 
     # Functions to export from this module
     FunctionsToExport = @(
+        # Core
         'Connect-Personio',
-        'Invoke-PersRequest'
+        'Invoke-PersRequest',
+
+        # Absence
+        'Get-PERSAbsenceType'
     )
 
     # Cmdlets to export from this module
