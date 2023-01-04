@@ -4,6 +4,11 @@
         <name>PSPersonio</name>
     </assembly>
     <members>
+        <member name="T:Personio.Absence.AbsenceType">
+             <summary>
+            
+             </summary>
+        </member>
         <member name="T:Personio.Core.AccessToken">
              <summary>
             
@@ -90,6 +95,27 @@
             </summary>
         </member>
         <member name="M:Personio.Core.AccessToken.ToString">
+            <summary>
+            Overrides the default ToString() method
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Personio.Object">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Object.BaseObject">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Object.Id">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="M:Personio.Object.ToString">
             <summary>
             Overrides the default ToString() method
             </summary>
