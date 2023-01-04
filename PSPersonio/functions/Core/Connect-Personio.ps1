@@ -38,7 +38,7 @@
         If this switch is enabled, you will be prompted for confirmation before executing any operations that change state.
 
     .EXAMPLE
-        Connect-Personio -Credential (Get-Credential "ClientID")
+        PS C:\> Connect-Personio -Credential (Get-Credential "ClientID")
 
         Connects to "api.personio.de" with the specified credentials.
         Connection will be set as default connection for any further action.
