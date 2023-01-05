@@ -56,12 +56,21 @@
     }
 
     # If specified, process hashtable QueryParameters to valid parameters into uri
-    if($QueryParameter) {
+    if ($QueryParameter) {
         $apiPath = "$($apiPath)?"
         $i = 0
         foreach ($key in $QueryParameter.Keys) {
-            if($i -gt 0) { $apiPath = "$($apiPath)&" }
-            $apiPath = "$($apiPath)$($key)=$($QueryParameter[$Key])"
+            if ($i -gt 0) {
+                $apiPath = "$($apiPath)&"
+            }
+
+            if ("System.Array" -in ($QueryParameter[$Key]).psobject.TypeNames) {
+                $parts = $QueryParameter[$Key] | ForEach-Object { "$($key)=$($_)" }
+                $apiPath = "$($apiPath)$([string]::Join("&", $parts))"
+            } else {
+                $apiPath = "$($apiPath)$($key)=$($QueryParameter[$Key])"
+            }
+
             $i++
         }
     }
