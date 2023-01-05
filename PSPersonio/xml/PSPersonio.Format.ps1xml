@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-16"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Configuration>
     <ViewDefinitions>
         <!-- Personio.Absence.AbsenceType -->
@@ -10,9 +10,6 @@
             <TableControl>
                 <AutoSize/>
                 <TableHeaders>
-                    <TableColumnHeader/>
-                    <TableColumnHeader/>
-                    <TableColumnHeader/>
                     <TableColumnHeader/>
                     <TableColumnHeader/>
                     <TableColumnHeader/>
@@ -33,9 +30,6 @@
                             <TableColumnItem><PropertyName>IsCertificationRequired</PropertyName></TableColumnItem>
                             <TableColumnItem><PropertyName>Category</PropertyName></TableColumnItem>
                             <TableColumnItem><PropertyName>SubstituteOption</PropertyName></TableColumnItem>
-                            <TableColumnItem><PropertyName>Unit</PropertyName></TableColumnItem>
-                            <TableColumnItem><PropertyName>CertificationSubmissionTimeframe</PropertyName></TableColumnItem>
-                            <TableColumnItem><PropertyName>BaseObject</PropertyName></TableColumnItem>
                         </TableColumnItems>
                     </TableRowEntry>
                 </TableRowEntries>
@@ -59,12 +53,90 @@
                             <ListItem><PropertyName>IsApprovalRequired</PropertyName></ListItem>
                             <ListItem><PropertyName>SubstituteOption</PropertyName></ListItem>
                             <ListItem><PropertyName>Category</PropertyName></ListItem>
-                            <ListItem><PropertyName>Unit</PropertyName></ListItem>
-                            <ListItem><PropertyName>CertificationSubmissionTimeframe</PropertyName></ListItem>
                         </ListItems>
                     </ListEntry>
                 </ListEntries>
             </ListControl>
-            </View>
-        </ViewDefinitions>
+        </View>
+
+
+        <!-- Personio.Absence.AbsencePeriod -->
+        <View>
+            <Name>Table_Personio.Absence.AbsencePeriod</Name>
+            <ViewSelectedBy>
+                <TypeName>Personio.Absence.AbsencePeriod</TypeName>
+            </ViewSelectedBy>
+            <TableControl>
+                <AutoSize/>
+                <TableHeaders>
+                    <TableColumnHeader/>
+                    <TableColumnHeader/>
+                    <TableColumnHeader/>
+                    <TableColumnHeader/>
+                    <TableColumnHeader/>
+                    <TableColumnHeader/>
+                    <TableColumnHeader/>
+                    <TableColumnHeader/>
+                    <TableColumnHeader/>
+                    <TableColumnHeader/>
+                    <TableColumnHeader/>
+                    <TableColumnHeader/>
+                    <TableColumnHeader/>
+                    <TableColumnHeader/>
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem><PropertyName>Id</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>Type</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>StartDate</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>EndDate</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>Employee</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>Status</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>Comment</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>CertificateStatus</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>HalfDayStart</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>HalfDayEnd</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>DaysCount</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>CreatedBy</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>CreatedAt</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>UpdatedAt</PropertyName></TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+
+        <!-- Personio.Absence.AbsencePeriod -->
+        <View>
+            <Name>List_Personio.Absence.AbsencePeriod</Name>
+            <ViewSelectedBy>
+                <TypeName>Personio.Absence.AbsencePeriod</TypeName>
+            </ViewSelectedBy>
+            <ListControl>
+                <ListEntries>
+                    <ListEntry>
+                        <ListItems>
+                            <ListItem><PropertyName>Id</PropertyName></ListItem>
+                            <ListItem><PropertyName>Type</PropertyName></ListItem>
+                            <ListItem><PropertyName>Employee</PropertyName></ListItem>
+                            <ListItem><PropertyName>Status</PropertyName></ListItem>
+                            <ListItem><PropertyName>StartDate</PropertyName></ListItem>
+                            <ListItem><PropertyName>EndDate</PropertyName></ListItem>
+                            <ListItem><PropertyName>DaysCount</PropertyName></ListItem>
+                            <ListItem><PropertyName>HalfDayStart</PropertyName></ListItem>
+                            <ListItem><PropertyName>HalfDayEnd</PropertyName></ListItem>
+                            <ListItem><PropertyName>CertificateStatus</PropertyName></ListItem>
+                            <ListItem><PropertyName>Comment</PropertyName></ListItem>
+                            <ListItem><PropertyName>CreatedBy</PropertyName></ListItem>
+                            <ListItem><PropertyName>CreatedAt</PropertyName></ListItem>
+                            <ListItem><PropertyName>UpdatedAt</PropertyName></ListItem>
+                        </ListItems>
+                    </ListEntry>
+                </ListEntries>
+            </ListControl>
+        </View>
+
+
+    </ViewDefinitions>
 </Configuration>

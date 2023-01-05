@@ -9,10 +9,31 @@
             
              </summary>
         </member>
+        <member name="F:Personio.Absence.AbsencePeriod.Type">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Absence.AbsencePeriod.Employee">
+             <summary>
+            
+             </summary>
+        </member>
         <member name="T:Personio.Absence.AbsenceType">
              <summary>
             
              </summary>
+        </member>
+        <member name="F:Personio.Absence.AbsenceType.Name">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="M:Personio.Absence.AbsenceType.ToString">
+            <summary>
+            Overrides the default ToString() method
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:Personio.Core.AccessToken">
              <summary>
@@ -100,6 +121,22 @@
             </summary>
         </member>
         <member name="M:Personio.Core.AccessToken.ToString">
+            <summary>
+            Overrides the default ToString() method
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Personio.Employee.BasicEmployee">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Employee.BasicEmployee.Name">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="M:Personio.Employee.BasicEmployee.ToString">
             <summary>
             Overrides the default ToString() method
             </summary>

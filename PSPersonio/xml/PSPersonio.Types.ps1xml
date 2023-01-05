@@ -23,16 +23,6 @@
         <Name>Personio.Absence.AbsenceType</Name>
         <Members>
             <ScriptProperty>
-                <Name>Name</Name>
-                <GetScriptBlock>
-                    $this.BaseObject.name
-                </GetScriptBlock>
-                <SetScriptBlock>
-                    $this.BaseObject.name = $args[0]
-                </SetScriptBlock>
-            </ScriptProperty>
-
-            <ScriptProperty>
                 <Name>Unit</Name>
                 <GetScriptBlock>
                     $this.BaseObject.unit
@@ -124,5 +114,178 @@
             <TypeName>PSFramework.Serialization.SerializationTypeConverter</TypeName>
         </TypeConverter>
     </Type>
+
+
+    <!-- Personio.Absence.AbsencePeriod -->
+    <Type>
+        <Name>Deserialized.Personio.Absence.AbsencePeriod</Name>
+        <Members>
+            <MemberSet>
+                <Name>PSStandardMembers</Name>
+                <Members>
+                    <NoteProperty>
+                        <Name>
+                            TargetTypeForDeserialization
+                        </Name>
+                        <Value>
+                            Personio.Absence.AbsencePeriod
+                        </Value>
+                    </NoteProperty>
+                </Members>
+            </MemberSet>
+        </Members>
+    </Type>
+    <Type>
+        <Name>Personio.Absence.AbsencePeriod</Name>
+        <Members>
+            <ScriptProperty>
+                <Name>Status</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.status
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.status = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>Comment</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.comment
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.comment = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>StartDate</Name>
+                <GetScriptBlock>
+                    Get-Date $this.BaseObject.start_date
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $stringDate = $args[0] | Get-Date -Format o
+                    if($stringDate -like "*.*+*") {
+                        $parts = $stringDate.Split(".").Split("+")
+                        $this.BaseObject.start_date = $parts[0] + "+" + $parts[2]
+                    } else {
+                        $this.BaseObject.start_date = $stringDate
+                    }
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>EndDate</Name>
+                <GetScriptBlock>
+                    Get-Date $this.BaseObject.end_date
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $stringDate = $args[0] | Get-Date -Format o
+                    if($stringDate -like "*.*+*") {
+                        $parts = $stringDate.Split(".").Split("+")
+                        $this.BaseObject.end_date = $parts[0] + "+" + $parts[2]
+                    } else {
+                        $this.BaseObject.end_date = $stringDate
+                    }
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>DaysCount</Name>
+                <GetScriptBlock>
+                    [int]::Parse( $this.BaseObject.days_count )
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.days_count = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>HalfDayStart</Name>
+                <GetScriptBlock>
+                    [int]::Parse( $this.BaseObject.half_day_start )
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.half_day_start = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>HalfDayEnd</Name>
+                <GetScriptBlock>
+                    [int]::Parse( $this.BaseObject.half_day_end )
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.half_day_end = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>CreatedBy</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.created_by
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.created_by = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>CertificateStatus</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.certificate.status
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.certificate.status = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>CreatedAt</Name>
+                <GetScriptBlock>
+                    Get-Date $this.BaseObject.created_at
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $stringDate = $args[0] | Get-Date -Format o
+                    if($stringDate -like "*.*+*") {
+                        $parts = $stringDate.Split(".").Split("+")
+                        $this.BaseObject.created_at = $parts[0] + "+" + $parts[2]
+                    } else {
+                        $this.BaseObject.created_at = $stringDate
+                    }
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>UpdatedAt</Name>
+                <GetScriptBlock>
+                    Get-Date $this.BaseObject.updated_at
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    #$this.BaseObject.updated_at = $args[0]
+
+                    $stringDate = $args[0] | Get-Date -Format o
+                    if($stringDate -like "*.*+*") {
+                        $parts = $stringDate.Split(".").Split("+")
+                        $this.BaseObject.updated_at = $parts[0] + "+" + $parts[2]
+                    } else {
+                        $this.BaseObject.updated_at = $stringDate
+                    }
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <CodeProperty IsHidden="true">
+                <Name>SerializationData</Name>
+                <GetCodeReference>
+                    <TypeName>PSFramework.Serialization.SerializationTypeConverter</TypeName>
+                    <MethodName>GetSerializationData</MethodName>
+                </GetCodeReference>
+            </CodeProperty>
+        </Members>
+        <TypeConverter>
+            <TypeName>PSFramework.Serialization.SerializationTypeConverter</TypeName>
+        </TypeConverter>
+    </Type>
+
 
 </Types>

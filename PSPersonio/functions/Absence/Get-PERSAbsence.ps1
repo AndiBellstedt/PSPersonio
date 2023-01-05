@@ -9,6 +9,10 @@
 
         The result can be paginated and.
 
+    .PARAMETER InputObject
+        AbsencePeriod to call again
+        It is inclusive, so the result starts from and including the provided StartDate
+
     .PARAMETER StartDate
         First day of the period to be queried.
         It is inclusive, so the result starts from and including the provided StartDate
@@ -51,31 +55,50 @@
         https://github.com/AndiBellstedt/PSPersonio
     #>
     [CmdletBinding(
-        DefaultParameterSetName="Default",
+        DefaultParameterSetName = "Default",
         SupportsShouldProcess = $false,
         PositionalBinding = $true,
         ConfirmImpact = 'Low'
     )]
     Param(
+        [Parameter(ParameterSetName = "Default")]
         [datetime]
         $StartDate,
 
+        [Parameter(ParameterSetName = "Default")]
         [datetime]
         $EndDate,
 
+        [Parameter(ParameterSetName = "Default")]
         [datetime]
         $UpdateFrom,
 
+        [Parameter(ParameterSetName = "Default")]
         [datetime]
         $UpdateTo,
 
+        [Parameter(
+            ParameterSetName = "Default",
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true
+        )]
         [ValidateNotNullOrEmpty()]
         [int[]]
         $EmployeeId,
 
+        [Parameter(ParameterSetName = "Default")]
         [ValidateNotNullOrEmpty()]
         [int]
         $ResultSize,
+
+        [Parameter(
+            ParameterSetName = "ByType",
+            Mandatory = $true,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true
+        )]
+        [Personio.Absence.AbsencePeriod[]]
+        $InputObject,
 
         [ValidateNotNullOrEmpty()]
         [Personio.Core.AccessToken]
@@ -83,8 +106,6 @@
     )
 
     begin {
-        if (-not $Token) { $Token = $script:PersonioToken }
-
         # define query parameters
         $queryParameter = [ordered]@{}
 
@@ -93,19 +114,21 @@
             $queryParameter.Add("limit", $ResultSize)
             $queryParameter.Add("offset", 0)
         }
-        if($StartDate) { $queryParameter.Add("start_date", (Get-Date -Date $StartDate -Format "yyyy-MM-dd")) }
-        if($EndDate) { $queryParameter.Add("end_date", (Get-Date -Date $EndDate -Format "yyyy-MM-dd")) }
-        if($UpdateFrom) { $queryParameter.Add("updated_from", (Get-Date -Date $UpdateFrom -Format "yyyy-MM-dd")) }
-        if($UpdateTo) { $queryParameter.Add("updated_to", (Get-Date -Date $UpdateTo -Format "yyyy-MM-dd")) }
+        if ($StartDate) { $queryParameter.Add("start_date", (Get-Date -Date $StartDate -Format "yyyy-MM-dd")) }
+        if ($EndDate) { $queryParameter.Add("end_date", (Get-Date -Date $EndDate -Format "yyyy-MM-dd")) }
+        if ($UpdateFrom) { $queryParameter.Add("updated_from", (Get-Date -Date $UpdateFrom -Format "yyyy-MM-dd")) }
+        if ($UpdateTo) { $queryParameter.Add("updated_to", (Get-Date -Date $UpdateTo -Format "yyyy-MM-dd")) }
     }
 
     process {
+        if (-not $Token) { $Token = $script:PersonioToken }
+
         $parameterSetName = $pscmdlet.ParameterSetName
         Write-PSFMessage -Level Debug -Message "ParameterNameSet: $($parameterSetName)" -Tag "AbsensePeriod"
 
         # fill pipedin query parameters
-        foreach ($id in $EmployeeId) {
-            $queryParameter.Add("employees[]",$id)
+        if ($EmployeeId) {
+            $queryParameter.Add("employees[]", [array]$EmployeeId)
         }
 
         # Prepare query
@@ -114,14 +137,42 @@
             "ApiPath" = "company/time-offs"
             "Token"   = $Token
         }
-        if($queryParameter) { $invokeParam.Add("QueryParameter", $queryParameter) }
+        if ($queryParameter) { $invokeParam.Add("QueryParameter", $queryParameter) }
 
         # Execute query
-        Write-PSFMessage -Level Verbose -Message "Getting available absence periods" -Tag "AbsensePeriod", "Query"
-        $response = Invoke-PERSRequest @invokeParam
+        $responseList = [System.Collections.ArrayList]@()
+        if ($parameterSetName -like "Default") {
+            Write-PSFMessage -Level Verbose -Message "Getting available absence periods" -Tag "AbsensePeriod", "Query"
 
-        # Check respeonse
-        if ($response.success) {
+            $response = Invoke-PERSRequest @invokeParam
+
+            # Check response and add to responseList
+            if ($response.success) {
+                $null = $responseList.Add($response)
+            } else {
+                Write-PSFMessage -Level Warning -Message "Personio api reported no data" -Tag "AbsensePeriod", "Query"
+            }
+        } elseif ($parameterSetName -like "ByType") {
+            foreach ($absencePeriod in $InputObject) {
+                Write-PSFMessage -Level Verbose -Message "Getting absence period Id $($absencePeriod.Id)" -Tag "AbsensePeriod", "Query"
+
+                $invokeParam.ApiPath = "company/time-offs/$($absencePeriod.Id)"
+                $response = Invoke-PERSRequest @invokeParam
+
+                # Check respeonse and add to responeList
+                if ($response.success) {
+                    $null = $responseList.Add($response)
+                } else {
+                    Write-PSFMessage -Level Warning -Message "Personio api reported no data on absence Id $($absencePeriod.Id)" -Tag "AbsensePeriod", "Query"
+                }
+
+                # remove token param for further api calls, due to the fact, that the passed in token, is no more valid after previous api all (api will use internal registered token)
+                if ($InputObject.Count -gt 1) { $invokeParam.Remove("Token") }
+            }
+        }
+        Remove-Variable -Name response -Force -WhatIf:$false -Confirm:$false -Verbose:$false -Debug:$false -ErrorAction Ignore -WarningAction Ignore -InformationAction Ignore
+
+        foreach ($response in $responseList) {
             # Check pagination / result limitation
             if ($response.metadata) {
                 Write-PSFMessage -Level Significant -Message "Pagination detected! Retrieved records: $([Array]($response.data).count) of $($response.metadata.total_elements) total records (api call hast limit of $($response.limit) records and started on record number $($response.offset))" -Tag "AbsensePeriod", "Query", "WebRequest", "Pagination"
@@ -139,16 +190,36 @@
                 }
                 $result.psobject.TypeNames.Insert(1, "Personio.Absence.$($record.type)")
 
+                $result.Employee = [Personio.Employee.BasicEmployee]@{
+                    BaseObject = $record.attributes.employee.attributes
+                    Id         = $record.attributes.employee.attributes.id.value
+                    Name       = "$($record.attributes.employee.attributes.last_name.value), $($record.attributes.employee.attributes.first_name.value)"
+                }
+                $result.Employee.psobject.TypeNames.Insert(1, "Personio.Employee.$($record.attributes.employee.type)")
+
+                $result.Type = [Personio.Absence.AbsenceType]@{
+                    BaseObject = $record.attributes.time_off_type.attributes
+                    Id         = $record.attributes.time_off_type.attributes.id
+                    Name       = $record.attributes.time_off_type.attributes.name
+                }
+                $result.Type.psobject.TypeNames.Insert(1, "Personio.Absence.$($record.attributes.time_off_type.type)")
+
                 # add objects to output array
                 $null = $output.Add($result)
             }
             Write-PSFMessage -Level Verbose -Message "Retrieve $($output.Count) objects of type [Personio.Absence.AbsencePeriod]" -Tag "AbsensePeriod", "Result"
 
             # Filtering
+            #ToDo: Implement filtering for record output
 
-        } else {
-            Write-PSFMessage -Level Warning -Message "Personio api reported no data" -Tag "AbsensePeriod", "Query"
+            # output final results
+            Write-PSFMessage -Level Verbose -Message "Output $($output.Count) objects" -Tag "AbsenseType", "Result", "Output"
+            $output
         }
+
+        # Cleanup variable
+        Remove-Variable -Name Token -Force -WhatIf:$false -Confirm:$false -Verbose:$false -Debug:$false -ErrorAction Ignore -WarningAction Ignore -InformationAction Ignore
+        $queryParameter.remove('employees[]')
     }
 
     end {
