@@ -114,6 +114,7 @@
                 $result = [Personio.Absence.AbsenceType]@{
                     BaseObject = $record.attributes
                     Id         = $record.attributes.id
+                    Name       = $record.attributes.name
                 }
                 $result.psobject.TypeNames.Insert(1, "Personio.Absence.$($record.type)")
 
@@ -131,7 +132,7 @@
                 foreach ($item in $output) {
                     foreach ($filter in $Name) {
                         $filterResult = $item | Where-Object Name -like $filter
-                        if($filterResult) { $null = $newOutput.Add($filterResult) }
+                        if ($filterResult) { $null = $newOutput.Add($filterResult) }
                     }
                 }
 
