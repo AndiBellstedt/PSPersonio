@@ -4,6 +4,11 @@
         <name>PSPersonio</name>
     </assembly>
     <members>
+        <member name="T:Personio.Absence.AbsencePeriod">
+             <summary>
+            
+             </summary>
+        </member>
         <member name="T:Personio.Absence.AbsenceType">
              <summary>
             

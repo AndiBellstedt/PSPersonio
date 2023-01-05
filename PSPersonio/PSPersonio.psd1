@@ -45,7 +45,8 @@
         'Invoke-PersRequest',
 
         # Absence
-        'Get-PERSAbsenceType'
+        'Get-PERSAbsenceType',
+        'Get-PERSAbsence'
     )
 
     # Cmdlets to export from this module
