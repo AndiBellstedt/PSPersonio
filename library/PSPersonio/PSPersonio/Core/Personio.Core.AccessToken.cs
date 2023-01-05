@@ -149,7 +149,7 @@ namespace Personio.Core {
             if (!string.IsNullOrEmpty(ApiUri)) {
                 _returnValue = ApiUri;
                 if(! string.IsNullOrEmpty( Convert.ToString(TimeRemaining) )) {
-                    _returnValue = string.Concat(_returnValue, " | ", Convert.ToString(TimeRemaining));
+                    _returnValue = string.Concat(_returnValue, " | valid for:", Convert.ToString(TimeRemaining));
                 }
             } else {
                 _returnValue = this.GetType().Name;
