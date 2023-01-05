@@ -121,15 +121,13 @@
     }
 
     process {
-        if (-not $Token) { $Token = $script:PersonioToken }
+        if (-not $MyInvocation.BoundParameters['Token']) { $Token = Get-AccessToken }
 
         $parameterSetName = $pscmdlet.ParameterSetName
         Write-PSFMessage -Level Debug -Message "ParameterNameSet: $($parameterSetName)" -Tag "AbsensePeriod"
 
         # fill pipedin query parameters
-        if ($EmployeeId) {
-            $queryParameter.Add("employees[]", [array]$EmployeeId)
-        }
+        if ($EmployeeId) { $queryParameter.Add("employees[]", [array]$EmployeeId) }
 
         # Prepare query
         $invokeParam = @{

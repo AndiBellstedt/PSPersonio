@@ -73,7 +73,7 @@
     }
 
     end {
-        if (-not $Token) { $Token = $script:PersonioToken }
+        if (-not $MyInvocation.BoundParameters['Token']) { $Token = Get-AccessToken }
 
 
         # Prepare query

@@ -77,7 +77,7 @@
     end {
         #region Perpare variables
         # Check AccessToken
-        if (-not $Token) { $Token = $script:PersonioToken }
+        if (-not $MyInvocation.BoundParameters['Token']) { $Token = Get-AccessToken }
         if (-not $Token) { Stop-PSFFunction -Message "No AccessToken found. Please connect to personio service frist. Use Connect-Personio command." -Tag "Connection", "MissingToken" -EnableException $true -Cmdlet $pscmdlet }
         if ($Token.IsValid) {
             Write-PSFMessage -Level System -Message "Valid AccessTokenId '$($Token.TokenID.ToString())' for service '$($Token.ApiUri)'."
@@ -139,7 +139,7 @@
 
             # Register updated AccessToken for further commands
             Register-AccessToken -Token $token
-            Write-PSFMessage -Level Verbose -Message "Updated AccessToken to Id '$($token.TokenID)'. Now valid to $($token.TimeStampExpires.toString())" -Tag "Connection", "AccessToken", "Update"
+            Write-PSFMessage -Level Verbose -Message "Update AccessToken to Id '$($token.TokenID)'. Now valid up to $($token.TimeStampExpires.toString())" -Tag "Connection", "AccessToken", "Update"
 
             # Check pagination
             if($responseContent.metadata) {
