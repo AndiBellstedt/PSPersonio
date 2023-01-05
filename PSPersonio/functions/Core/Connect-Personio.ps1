@@ -145,6 +145,8 @@
             Stop-PSFFunction -Message "Service '$($uri.AbsoluteUri)' processes the authentication request, but response does not succeed" -Tag "Connection", "Authentication", "New" -EnableException $true -Cmdlet $pscmdlet
         } elseif (-not $response.data.token) {
             Stop-PSFFunction -Message "Something went wrong on authenticating user '$($ClientId)'. No token found in authentication respeonse. Unable login to service '$($uri.AbsoluteUri)'" -Tag "Connection", "Authentication", "New" -EnableException $true -Cmdlet $pscmdlet
+        } else {
+            Set-PSFConfig -Module 'PSPersonio' -Name 'API.URI' -Value $uri.AbsoluteUri
         }
 
         # Create output token
@@ -153,7 +155,6 @@
 
         # Register AccessToken for further commands
         Register-AccessToken -Token $token
-        Set-PSFConfig -Module 'PSPersonio' -Name 'API.URI' -Value $uri.AbsoluteUri
         Write-PSFMessage -Level Significant -Message "Connected to service '($($token.ApiUri))' with ClientId '$($token.ClientId)'. TokenId: $($token.TokenID) valid for $($token.AccessTokenLifeTime.toString())" -Tag "Connection"
 
         # Output if passthru
