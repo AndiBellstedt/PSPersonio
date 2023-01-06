@@ -108,6 +108,7 @@
         # fill pipedin query parameters
         if ($Email) { $queryParameter.Add("email", $Email) }
 
+
         # Prepare query
         $invokeParam = @{
             "Type"    = "GET"
@@ -115,6 +116,7 @@
             "Token"   = $Token
         }
         if ($queryParameter) { $invokeParam.Add("QueryParameter", $queryParameter) }
+
 
         # Execute query
         $responseList = [System.Collections.ArrayList]@()
@@ -130,11 +132,13 @@
                 Write-PSFMessage -Level Warning -Message "Personio api reported no data" -Tag "Employee", "Query"
             }
         } elseif ($parameterSetName -like "ByType") {
+
             foreach ($inputItem in $InputObject) {
                 Write-PSFMessage -Level Verbose -Message "Getting employee Id $($inputItem.Id)" -Tag "Employee", "Query"
 
                 $invokeParam.ApiPath = "company/employees/$($inputItem.Id)"
                 $response = Invoke-PERSRequest @invokeParam
+
 
                 # Check respeonse and add to responeList
                 if ($response.success) {
@@ -143,19 +147,20 @@
                     Write-PSFMessage -Level Warning -Message "Personio api reported no data on absence Id $($inputItem.Id)" -Tag "Employee", "Query"
                 }
 
+
                 # remove token param for further api calls, due to the fact, that the passed in token, is no more valid after previous api all (api will use internal registered token)
-                #if ($InputObject.Count -gt 1) {
                 $invokeParam.Remove("Token")
-                #}
             }
         }
         Remove-Variable -Name response -Force -WhatIf:$false -Confirm:$false -Verbose:$false -Debug:$false -ErrorAction Ignore -WarningAction Ignore -InformationAction Ignore
+
 
         foreach ($response in $responseList) {
             # Check pagination / result limitation
             if ($response.metadata) {
                 Write-PSFMessage -Level Significant -Message "Pagination detected! Retrieved records: $([Array]($response.data).count) of $($response.metadata.total_elements) total records (api call hast limit of $($response.limit) records and started on record number $($response.offset))" -Tag "Employee", "Query", "WebRequest", "Pagination"
             }
+
 
             # Process result
             $output = [System.Collections.ArrayList]@()
@@ -170,120 +175,67 @@
                 }
                 $result.psobject.TypeNames.Insert(1, "Personio.Employee.$($record.type)")
 
-                # dynamic attribute checking
+                #region dynamic attribute checking and typeData Format generation
                 $dynamicAttributes = $result.BaseObject.psobject.Members | Where-Object name -like "dynamic_*"
                 if ($dynamicAttributes) {
-                    $typeNameBasic = 'Personio.Employee.BasicEmployee'
+                    # Dynamic attributes found
+                    $typeNameBasic = $result.psobject.TypeNames[0]
                     $typeNameExtended = "Personio.Employee.ExtendedEmployee"
+                    Write-PSFMessage -Level Debug -Message "Employee with dynamic attribute detected, create [$($typeNameExtended)] object" -Tag "Employee", "ObjectCreation", "ExtendedEmployee", "DynamicProperty"
 
+                    # Add sythetic type on top of employee object
                     $result.psobject.TypeNames.Insert(0, $typeNameExtended)
 
+                    # Check synthetic typeData definition & compile the gathered dynamic properties if needed
                     $typeExtendedEmployee = Get-TypeData -TypeName $typeNameExtended
                     $_modified = $false
                     foreach ($dynamicAttr in $dynamicAttributes) {
                         if (-not ($dynamicAttr.Value.label -in $typeExtendedEmployee.Members.Keys)) {
+                            # dynamic property is new and currently not in TypeData defintion
+                            Write-PSFMessage -Level Debug -Message "Add dynamic attribute '$($dynamicAttr.Name)' as property '$($dynamicAttr.Value.label)' into TypeData for [$($typeNameExtended)]" -Tag "Employee", "ObjectCreation", "ExtendedEmployee", "DynamicProperty", "TypeData"
                             Update-TypeData -TypeName $typeNameExtended -Force -MemberName $dynamicAttr.Value.label -MemberType ScriptProperty -Value ([scriptblock]::Create( "`$this.BaseObject.$($dynamicAttr.Name).value" ))
                             $_modified = $true
                         }
                     }
 
-                    if($_modified) {
+                    if ($_modified) {
+                        Write-PSFMessage -Level Verbose -Message "New dynamic attributes within employee detected. TypeData for [Personio.Employee.ExtendedEmployee] was modified. Going to compile FormatData" -Tag "Employee", "ObjectCreation", "ExtendedEmployee", "DynamicProperty", "FormatData"
                         $typeBasicEmployee = Get-TypeData -TypeName $typeNameBasic
                         $typeExtendedEmployee = Get-TypeData -TypeName $typeNameExtended
-                        $pathExtended = Join-Path -Path $env:TEMP -ChildPath "$($typeNameExtended).ps1xml"
+                        $pathExtended = Join-Path -Path $env:TEMP -ChildPath "$($typeNameExtended).Format.ps1xml"
 
                         $properties = @( "Id", "Name")
                         $properties += $typeBasicEmployee.Members.Keys
                         $properties += $typeExtendedEmployee.Members.Keys
                         $properties = $properties | Where-Object { $_ -notlike 'SerializationData' }
 
-                        # generate format data ps1xml
-                        $XmlWriter = [System.XMl.XmlTextWriter]::new($pathExtended, [System.Text.Encoding]::UTF8)
+                        New-PS1XML -Path $pathExtended -TypeName $typeNameExtended -PropertyList $properties -View Table, List -Encoding UTF8
 
-                        $xmlWriter.Formatting = "Indented"
-                        $xmlWriter.Indentation = "4"
-
-                        $xmlWriter.WriteStartDocument()
-
-                        $xmlWriter.WriteStartElement("Configuration")
-                            $xmlWriter.WriteStartElement("ViewDefinitions")
-                                $xmlWriter.WriteStartElement("View")
-                                    $xmlWriter.WriteElementString("Name", "Table_$($typeNameExtended)")
-                                    $xmlWriter.WriteStartElement("ViewSelectedBy")
-                                        $xmlWriter.WriteElementString("TypeName", "$($typeNameExtended)")
-                                    $xmlWriter.WriteEndElement()
-                                    $xmlWriter.WriteStartElement("TableControl")
-                                        $xmlWriter.WriteStartElement("AutoSize")
-                                        $xmlWriter.WriteEndElement()
-                                        $xmlWriter.WriteStartElement("TableHeaders")
-                                        foreach ($property in $properties) {
-                                            $xmlWriter.WriteStartElement("TableColumnHeader")
-                                            $xmlWriter.WriteEndElement()
-                                        }
-                                        $xmlWriter.WriteEndElement()
-                                        $xmlWriter.WriteStartElement("TableRowEntries")
-                                            $xmlWriter.WriteStartElement("TableRowEntry")
-                                                $xmlWriter.WriteStartElement("TableColumnItems")
-                                                foreach ($property in $properties) {
-                                                    $xmlWriter.WriteStartElement("TableColumnItem")
-                                                        $xmlWriter.WriteElementString("PropertyName", $property)
-                                                    $xmlWriter.WriteEndElement()
-                                                }
-                                                $xmlWriter.WriteEndElement()
-                                            $xmlWriter.WriteEndElement()
-                                        $xmlWriter.WriteEndElement()
-                                    $xmlWriter.WriteEndElement()
-                                $xmlWriter.WriteEndElement()
-
-                                $xmlWriter.WriteStartElement("View")
-                                    $xmlWriter.WriteElementString("Name", "List_$($typeNameExtended)")
-                                    $xmlWriter.WriteStartElement("ViewSelectedBy")
-                                        $xmlWriter.WriteElementString("TypeName", "$($typeNameExtended)")
-                                    $xmlWriter.WriteEndElement()
-                                    $xmlWriter.WriteStartElement("ListControl")
-                                        $xmlWriter.WriteStartElement("ListEntries")
-                                            $xmlWriter.WriteStartElement("ListEntry")
-                                                $xmlWriter.WriteStartElement("ListItems")
-                                                foreach ($property in $properties) {
-                                                    $xmlWriter.WriteStartElement("ListItem")
-                                                        $xmlWriter.WriteElementString("PropertyName", $property)
-                                                    $xmlWriter.WriteEndElement()
-                                                }
-                                                $xmlWriter.WriteEndElement()
-                                            $xmlWriter.WriteEndElement()
-                                        $xmlWriter.WriteEndElement()
-                                    $xmlWriter.WriteEndElement()
-                                $xmlWriter.WriteEndElement()
-
-                            $xmlWriter.WriteEndElement()
-                        $xmlWriter.WriteEndElement()
-
-                        # End the XML Document
-                        $xmlWriter.WriteEndDocument()
-
-                        # Finish The Document
-                        $xmlWriter.Finalize
-                        $xmlWriter.Flush()
-                        $xmlWriter.Close()
-
+                        Write-PSFMessage -Level System -Message "Update FormatData with file '$($pathExtended)'" -Tag "Employee", "ObjectCreation", "ExtendedEmployee", "DynamicProperty", "FormatData"
                         Update-FormatData -PrependPath $pathExtended
-
-                        #Remove-Item $pathExtended -Force -Confirm:$false
                     }
                 }
+                #endregion dynamic attribute checking and typeData Format generation
 
                 # add objects to output array
                 $null = $output.Add($result)
             }
-            Write-PSFMessage -Level Verbose -Message "Retrieve $($output.Count) objects of type [Personio.Employee.BasicEmployee]" -Tag "Employee", "Result"
+            if ($output.Count -gt 1) {
+                Write-PSFMessage -Level Verbose -Message "Retrieve $(([string]::Join(" & ", ($output | ForEach-Object { $_.psobject.TypeNames[0] } | Group-Object | ForEach-Object { "$($_.count) [$($_.Name)]" })))) objects" -Tag "Employee", "Result"
+            } else {
+                Write-PSFMessage -Level Verbose -Message "Retrieve $($output.Count) object$(if($output) { " [" + $output[0].psobject.TypeNames[0] + "]"})" -Tag "Employee", "Result"
+            }
+
 
             # Filtering
             #ToDo: Implement filtering for record output
+
 
             # output final results
             Write-PSFMessage -Level Verbose -Message "Output $($output.Count) objects" -Tag "AbsenseType", "Result", "Output"
             $output
         }
+
 
         # Cleanup variable
         Remove-Variable -Name Token -Force -WhatIf:$false -Confirm:$false -Verbose:$false -Debug:$false -ErrorAction Ignore -WarningAction Ignore -InformationAction Ignore
