@@ -288,4 +288,146 @@
     </Type>
 
 
+    <!-- Personio.Employee.BasicEmployee -->
+    <Type>
+        <Name>Deserialized.Personio.Employee.BasicEmployee</Name>
+        <Members>
+            <MemberSet>
+                <Name>PSStandardMembers</Name>
+                <Members>
+                    <NoteProperty>
+                        <Name>
+                            TargetTypeForDeserialization
+                        </Name>
+                        <Value>
+                            Personio.Employee.BasicEmployee
+                        </Value>
+                    </NoteProperty>
+                </Members>
+            </MemberSet>
+        </Members>
+    </Type>
+    <Type>
+        <Name>Personio.Employee.BasicEmployee</Name>
+        <Members>
+            <ScriptProperty>
+                <Name>FirstName</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.first_name.value
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.first_name.value = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>LastName</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.last_name.value
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.last_name.value = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>Email</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.email.value
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.email.value = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>Gender</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.gender.value
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.gender.value = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>Position</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.position.value
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.position.value = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>Subcompany</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.subcompany.value
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.subcompany.value = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>Department</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.department.value
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.department.value = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>Office</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.office.value
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.office.value = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>HireDate</Name>
+                <GetScriptBlock>
+                    Get-Date $this.BaseObject.hire_date.value
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    #$this.BaseObject.hire_date.value = $args[0]
+
+                    $stringDate = $args[0] | Get-Date -Format o
+                    if($stringDate -like "*.*+*") {
+                        $parts = $stringDate.Split(".").Split("+")
+                        $this.BaseObject.hire_date.value = $parts[0] + "+" + $parts[2]
+                    } else {
+                        $this.BaseObject.hire_date.value = $stringDate
+                    }
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>WeeklyWorkingHours</Name>
+                <GetScriptBlock>
+                    [int]::Parse( $this.BaseObject.weekly_working_hours.value )
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.weekly_working_hours.value = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <CodeProperty IsHidden="true">
+                <Name>SerializationData</Name>
+                <GetCodeReference>
+                    <TypeName>PSFramework.Serialization.SerializationTypeConverter</TypeName>
+                    <MethodName>GetSerializationData</MethodName>
+                </GetCodeReference>
+            </CodeProperty>
+        </Members>
+        <TypeConverter>
+            <TypeName>PSFramework.Serialization.SerializationTypeConverter</TypeName>
+        </TypeConverter>
+    </Type>
 </Types>
