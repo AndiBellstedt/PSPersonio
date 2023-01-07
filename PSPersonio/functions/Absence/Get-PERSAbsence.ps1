@@ -11,27 +11,26 @@
 
     .PARAMETER InputObject
         AbsencePeriod to call again
-        It is inclusive, so the result starts from and including the provided StartDate
 
     .PARAMETER StartDate
         First day of the period to be queried.
-        It is inclusive, so the result starts from and including the provided StartDate
 
     .PARAMETER EndDate
         Last day of the period to be queried.
-        It is inclusive, so the result ends on end_date including absences from the EndDate
 
     .PARAMETER UpdatedFrom
         Query the periods that created or modified from the date UpdatedFrom.
-        It is inclusive, so all the periods created or modified from the beginning of the UpdatedFrom will be included in the results
 
     .PARAMETER UpdatedTo
-        Query the periods that created or modified until the date UpdatedTo.
-        It is inclusive, so all the periods created or modified until the end of the UpdatedTo will be included in the results
+        Query the periods that created or modified until the date UpdatedTo
 
     .PARAMETER EmployeeId
-        A list of Personio employee ID's to filter the results.
+        A list of Personio employee ID's to filter the result.
         The result filters including only absences of provided employees
+
+    .PARAMETER InclusiveFiltering
+        If specified, datefiltering will change it's behaviour
+        Absence records that begin or end before specified StartDate or after specified EndDate will be outputted
 
     .PARAMETER ResultSize
         How much records will be returned from the api.
@@ -99,6 +98,9 @@
         )]
         [Personio.Absence.AbsencePeriod[]]
         $InputObject,
+
+        [switch]
+        $InclusiveFiltering,
 
         [ValidateNotNullOrEmpty()]
         [Personio.Core.AccessToken]
@@ -208,7 +210,12 @@
             Write-PSFMessage -Level Verbose -Message "Retrieve $($output.Count) objects of type [Personio.Absence.AbsencePeriod]" -Tag "AbsensePeriod", "Result"
 
             # Filtering
-            #ToDo: Implement filtering for record output
+            if (-not $MyInvocation.BoundParameters['InclusiveFiltering']) {
+                if ($StartDate) { $output = $output | Where-Object StartDate -ge $StartDate }
+                if ($EndDate) { $output = $output | Where-Object EndDate -le $EndDate }
+                if ($UpdateFrom) { $output = $output | Where-Object UpdatedAt -ge $UpdateFrom }
+                if ($UpdateTo) { $output = $output | Where-Object UpdatedAt -le $UpdateTo }
+            }
 
             # output final results
             Write-PSFMessage -Level Verbose -Message "Output $($output.Count) objects" -Tag "AbsenseType", "Result", "Output"
