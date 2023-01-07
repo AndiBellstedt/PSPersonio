@@ -8,7 +8,7 @@
         The result can be paginated and.
 
     .PARAMETER InputObject
-        AbsencePeriod to call again
+        Employee to call again
         It is inclusive, so the result starts from and including the provided StartDate
 
     .PARAMETER Email
@@ -144,7 +144,7 @@
                 if ($response.success) {
                     $null = $responseList.Add($response)
                 } else {
-                    Write-PSFMessage -Level Warning -Message "Personio api reported no data on absence Id $($inputItem.Id)" -Tag "Employee", "Query"
+                    Write-PSFMessage -Level Warning -Message "Personio api reported no data on employee Id $($inputItem.Id)" -Tag "Employee", "Query"
                 }
 
 
@@ -164,6 +164,7 @@
 
             # Process result
             $output = [System.Collections.ArrayList]@()
+
             foreach ($record in $response.data) {
                 Write-PSFMessage -Level Debug -Message "Working on record Id $($record.attributes.id.value) name: $($record.attributes.first_name.value) $($record.attributes.last_name.value)" -Tag "Employee", "ObjectCreation"
 
@@ -220,6 +221,7 @@
                 # add objects to output array
                 $null = $output.Add($result)
             }
+
             if ($output.Count -gt 1) {
                 Write-PSFMessage -Level Verbose -Message "Retrieve $(([string]::Join(" & ", ($output | ForEach-Object { $_.psobject.TypeNames[0] } | Group-Object | ForEach-Object { "$($_.count) [$($_.Name)]" })))) objects" -Tag "Employee", "Result"
             } else {
@@ -232,8 +234,10 @@
 
 
             # output final results
-            Write-PSFMessage -Level Verbose -Message "Output $($output.Count) objects" -Tag "AbsenseType", "Result", "Output"
-            $output
+            Write-PSFMessage -Level Verbose -Message "Output $($output.Count) objects" -Tag "Employee", "Result", "Output"
+            foreach($item in $output) {
+                $item
+            }
         }
 
 
