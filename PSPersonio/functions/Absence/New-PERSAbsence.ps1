@@ -136,56 +136,59 @@
         $parameterSetName = $pscmdlet.ParameterSetName
         Write-PSFMessage -Level Debug -Message "ParameterNameSet: $($parameterSetName)" -Tag "AbsensePeriod", "New"
 
-        # fill query parameters
-        if ($MyInvocation.BoundParameters['StartDate']) {$body.Add("start_date", (Get-Date -Date $StartDate -Format "yyyy-MM-dd")) }
-        if ($MyInvocation.BoundParameters['EndDate']) { $body.Add("end_date", (Get-Date -Date $EndDate -Format "yyyy-MM-dd")) }
-        if ($MyInvocation.BoundParameters['HalfDayStart']) { $body.Add("half_day_start", $HalfDayStart.ToString().ToLower()) }
-        if ($MyInvocation.BoundParameters['HalfDayEnd']) { $body.Add("half_day_end", $HalfDayEnd.ToString().ToLower()) }
-        if ($MyInvocation.BoundParameters['$Comment']) { $body.Add("comment", $Comment) }
-        if ($MyInvocation.BoundParameters['SkipApproval']) { $body.Add("skip_approval", $SkipApproval.ToString().ToLower()) }
-
         # fill pipedin query parameters
         if ($parameterSetName -like "ApiNative") {
-
             $body.Add("employee_id", $EmployeeId)
             $body.Add("time_off_type_id", $AbsenceTypeId)
 
         } elseif ($parameterSetName -like "UserFriendly") {
-
             $body.Add("employee_id", $Employee.Id)
             $body.Add("time_off_type_id", $AbsenceType.Id)
 
         }
 
+        # fill query parameters
+        $body.Add("start_date", (Get-Date -Date $StartDate -Format "yyyy-MM-dd"))
+        $body.Add("end_date", (Get-Date -Date $EndDate -Format "yyyy-MM-dd"))
+        $body.Add("half_day_start", $HalfDayStart.ToString().ToLower())
+        $body.Add("half_day_end", $HalfDayEnd.ToString().ToLower())
+        $body.Add("skip_approval", $SkipApproval.ToString().ToLower())
+        #if ($MyInvocation.BoundParameters['Comment']) { $body.Add("comment", [uri]::EscapeDataString($Comment)) }
+        if ($MyInvocation.BoundParameters['Comment']) { $body.Add("comment", $Comment) }
+
         # Debug logging
-        foreach($key in $body.Keys) {
+        foreach ($key in $body.Keys) {
             Write-PSFMessage -Level Debug -Message "Added body attribute '$($key)' with value '$($body[$key])'" -Tag "AbsensePeriod", "New", "Request"
         }
 
         # Prepare query
         $invokeParam = @{
-            "Type"    = "POST"
-            "ApiPath" = "company/time-offs"
-            "Token"   = $Token
+            "Type"             = "POST"
+            "ApiPath"          = "company/time-offs"
+            "Token"            = $Token
+            "Body"             = $body
+            "AdditionalHeader" = @{
+                "accept"       = "application/json"
+                "content-type" = "application/x-www-form-urlencoded"
+            }
         }
-        if ($body) { $invokeParam.Add("Body", $body) }
 
-        if ($pscmdlet.ShouldProcess("absence period of '$($AbsenceType.Name)' ($($body['start_date'])-$($body['end_date']))", "New")) {
-            Write-PSFMessage -Level Verbose -Message "New absence period of '$($AbsenceType.Name)' ($($body['start_date'])-$($body['end_date']))" -Tag "AbsensePeriod", "New"
+        $processMsg = "absence period of '$($AbsenceType.Name)' ($($body['start_date'])-$($body['end_date']))"
+        if ($pscmdlet.ShouldProcess($processMsg, "New")) {
+            Write-PSFMessage -Level Verbose -Message "New $($processMsg)" -Tag "AbsensePeriod", "New"
 
             # Execute query
             $response = Invoke-PERSRequest @invokeParam
 
             # Check response and add to responseList
             if ($response.success) {
-                Write-PSFMessage -Level System -Message "Retrieve $($response.data.Count) objects" -Tag "AbsensePeriod", "New", "Result"
+                Write-PSFMessage -Level System -Message "Retrieve $(([array]$response.data).Count) objects" -Tag "AbsensePeriod", "New", "Result"
 
                 foreach ($record in $response.data) {
                     # create absence object
                     $result = [Personio.Absence.AbsencePeriod]@{
                         BaseObject = $record.attributes
                         Id         = $record.attributes.id
-                        Name       = $record.attributes.time_off_type.attributes.name
                     }
                     $result.psobject.TypeNames.Insert(1, "Personio.Absence.$($record.type)")
 
@@ -206,7 +209,7 @@
                     $result.Type.psobject.TypeNames.Insert(1, "Personio.Absence.$($record.attributes.time_off_type.type)")
 
                     # output final results
-                    Write-PSFMessage -Level Verbose -Message "Output [$($result.psobject.TypeNames[0])] object (start: $(Get-Date $result.StartDate -Format "yyyy-MM-dd") - end: $(Get-Date $result.EndDate -Format "yyyy-MM-dd"))" -Tag "AbsensePeriod", "Result", "Output"
+                    Write-PSFMessage -Level Verbose -Message "Output [$($result.psobject.TypeNames[0])] object '$($result.Type)' (start: $(Get-Date $result.StartDate -Format "yyyy-MM-dd") - end: $(Get-Date $result.EndDate -Format "yyyy-MM-dd"))" -Tag "AbsensePeriod", "Result", "Output"
                     $result
                 }
 
