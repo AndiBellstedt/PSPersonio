@@ -106,7 +106,9 @@
             $processMessage = $processMessage + " (" + $Absence.Type + " on '" + $Absence.Employee + "' for " + (Get-Date -Date $Absence.StartDate -Format "yyyy-MM-dd") + " - " + (Get-Date -Date $Absence.EndDate -Format "yyyy-MM-dd") + ")"
         }
 
-        if ($pscmdlet.ShouldProcess($processMessage, "Remove")) { $Force = $true }
+        if(-not $Force) {
+            if ($pscmdlet.ShouldProcess($processMessage, "Remove")) { $Force = $true }
+        }
 
         if($Force) {
             Write-PSFMessage -Level Verbose -Message "Remove $($processMessage)" -Tag "AbsensePeriod", "Remove"
@@ -116,7 +118,7 @@
 
             # Check response and add to responseList
             if ($response.success) {
-                Write-PSFMessage -Level Vebose -Message "Absence id '$($id)' was removed. Message: $($response.data.message)" -Tag "AbsensePeriod", "Remove", "Result"
+                Write-PSFMessage -Level Verbose -Message "Absence id '$($id)' was removed. Message: $($response.data.message)" -Tag "AbsensePeriod", "Remove", "Result"
             } else {
                 Write-PSFMessage -Level Warning -Message "Personio api reported no data" -Tag "AbsensePeriod", "Remove", "Result"
             }
