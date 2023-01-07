@@ -93,8 +93,11 @@
         $ApiPath = Format-ApiPath -Path $ApiPath -Token $Token -QueryParameter $QueryParameter
 
         # Format body
-        if ($Body) {
-            $bodyData = $Body | ConvertTo-Json
+        if ($MyInvocation.BoundParameters['Body']) {
+            $parts = foreach($key in $body.Keys) {
+                "$($key)=$($body[$key])"
+            }
+            $bodyData = [string]::Join("&", $parts)
         } else {
             $bodyData = $null
         }
