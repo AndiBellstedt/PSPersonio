@@ -22,6 +22,10 @@
     .PARAMETER Body
         The body as a hashtable for the request
 
+    .PARAMETER AdditionalHeader
+        Additional headers to add in api call
+        Provided as a hashtable
+
     .PARAMETER Token
         The TANSS.Connection token
 
@@ -64,6 +68,9 @@
         [hashtable]
         $Body,
 
+        [hashtable]
+        $AdditionalHeader,
+
         [Personio.Core.AccessToken]
         $Token
     )
@@ -80,27 +87,29 @@
         if (-not $MyInvocation.BoundParameters['Token']) { $Token = Get-AccessToken }
         if (-not $Token) { Stop-PSFFunction -Message "No AccessToken found. Please connect to personio service frist. Use Connect-Personio command." -Tag "Connection", "MissingToken" -EnableException $true -Cmdlet $pscmdlet }
         if ($Token.IsValid) {
-            Write-PSFMessage -Level System -Message "Valid AccessTokenId '$($Token.TokenID.ToString())' for service '$($Token.ApiUri)'."
+            Write-PSFMessage -Level System -Message "Valid AccessTokenId '$($Token.TokenID.ToString())' for service '$($Token.ApiUri)'." -Tag "WebRequest", "Token"
         } else {
             Stop-PSFFunction -Message "AccessTokenId '$($Token.TokenID.ToString())' is not valid. Please reconnect to personio service. Use Connect-Personio command." -Tag "Connection", "InvalidToken" -EnableException $true -Cmdlet $pscmdlet
         }
+
 
         # Get AppIds
         [string]$applicationIdentifier = Get-PSFConfigValue -FullName 'PSPersonio.WebClient.ApplicationIdentifier' -Fallback "PSPersonio"
         [string]$partnerIdentifier = Get-PSFConfigValue -FullName 'PSPersonio.WebClient.PartnerIdentifier' -Fallback ""
 
+
         # Format api path / api route to call
         $ApiPath = Format-ApiPath -Path $ApiPath -Token $Token -QueryParameter $QueryParameter
 
+
         # Format body
         if ($MyInvocation.BoundParameters['Body']) {
-            $parts = foreach($key in $body.Keys) {
-                "$($key)=$($body[$key])"
-            }
-            $bodyData = [string]::Join("&", $parts)
+            $bodyData = $Body | ConvertTo-Json -Compress
+            Write-PSFMessage -Level Debug -Message "BodyData: $($bodyData)" -Tag "WebRequest", "Body"
         } else {
             $bodyData = $null
         }
+
 
         # Format request header
         $header = @{
@@ -109,7 +118,14 @@
             "X-Personio-App-ID"     = $applicationIdentifier
         }
 
+        if ($MyInvocation.BoundParameters['AdditionalHeader']) {
+            foreach ($key in $AdditionalHeader.Keys) {
+                $header.Add($key, $AdditionalHeader[$key])
+            }
+        }
+
         #endregion Perpare variables
+
 
         # Invoke the api request to the personio service
         $paramInvoke = @{
@@ -125,7 +141,7 @@
         }
 
         if ($pscmdlet.ShouldProcess("$($Type) web REST call against URL '$($paramInvoke.Uri)'", "Invoke")) {
-            Write-PSFMessage -Level Verbose -Message "Invoke $($Type) web REST call against URL '$($paramInvoke.Uri)'" -Tag "WebRequest"
+            Write-PSFMessage -Level Verbose -Message "Invoke $($Type) web REST call against URL '$($paramInvoke.Uri)'" -Tag "WebRequest", "Invoke"
 
             try {
                 $response = Invoke-WebRequest @paramInvoke -UseBasicParsing
@@ -137,21 +153,20 @@
             }
 
             # Create updated AccesToken from response. Every token can be used once and every api call will offer a new token
-            Write-PSFMessage -Level System -Message "Update Personio.Core.AccessToken" -Tag "Connection", "AccessToken", "Update"
+            Write-PSFMessage -Level System -Message "Update Personio.Core.AccessToken" -Tag "WebRequest", "Connection", "AccessToken", "Update"
             $token = New-AccessToken -RawToken $response.Headers['authorization'].Split(" ")[1]
 
             # Register updated AccessToken for further commands
             Register-AccessToken -Token $token
-            Write-PSFMessage -Level Verbose -Message "Update AccessToken to Id '$($token.TokenID)'. Now valid up to $($token.TimeStampExpires.toString())" -Tag "Connection", "AccessToken", "Update"
+            Write-PSFMessage -Level Verbose -Message "Update AccessToken to Id '$($token.TokenID)'. Now valid up to $($token.TimeStampExpires.toString())" -Tag "WebRequest", "Connection", "AccessToken", "Update"
 
             # Check pagination
-            if($responseContent.metadata) {
+            if ($responseContent.metadata) {
                 Write-PSFMessage -Level VeryVerbose -Message "Pagination detected! Retrieved records: $([Array]($responseContent.data).count) of $($responseContent.metadata.total_elements) total records (api call hast limit of $($responseContent.limit) records and started on record number $($responseContent.offset))" -Tag "WebRequest", "Pagination"
             }
 
             # Output data
             $responseContent
         }
-
     }
 }
