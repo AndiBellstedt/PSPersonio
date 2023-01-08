@@ -208,6 +208,7 @@
         </View>
 
 
+        <!-- Personio.Absence.AbsenceSummaryRecord -->
         <View>
             <Name>Table_Personio.Absence.AbsenceSummaryRecord</Name>
             <ViewSelectedBy>
@@ -286,6 +287,146 @@
                     <WideEntry>
                         <WideItem>
                             <ScriptBlock>$_.tostring()</ScriptBlock>
+                        </WideItem>
+                    </WideEntry>
+                </WideEntries>
+            </WideControl>
+        </View>
+
+
+        <!-- Personio.Attendance.AttendanceRecord -->
+        <View>
+            <Name>Table_Personio.Attendance.AttendanceRecord</Name>
+            <ViewSelectedBy>
+                <TypeName>Personio.Attendance.AttendanceRecord</TypeName>
+            </ViewSelectedBy>
+            <TableControl>
+                <AutoSize />
+                <TableHeaders>
+                    <TableColumnHeader></TableColumnHeader>
+                    <TableColumnHeader></TableColumnHeader>
+                    <TableColumnHeader></TableColumnHeader>
+                    <TableColumnHeader></TableColumnHeader>
+                    <TableColumnHeader></TableColumnHeader>
+                    <TableColumnHeader></TableColumnHeader>
+                    <TableColumnHeader></TableColumnHeader>
+                    <TableColumnHeader></TableColumnHeader>
+                    <TableColumnHeader></TableColumnHeader>
+                    <TableColumnHeader></TableColumnHeader>
+                    <TableColumnHeader></TableColumnHeader>
+                    <TableColumnHeader></TableColumnHeader>
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem>
+                                <PropertyName>Id</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Employee</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Date</PropertyName>
+                                <FormatString>yyyy-MM-dd</FormatString>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Status</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Start</PropertyName>
+                                <FormatString>HH:mm</FormatString>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>End</PropertyName>
+                                <FormatString>HH:mm</FormatString>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Break</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Project</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>IsHoliday</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>IsAbsence</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Comment</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>UpdatedAt</PropertyName>
+                            </TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+        <View>
+            <Name>List_Personio.Attendance.AttendanceRecord</Name>
+            <ViewSelectedBy>
+                <TypeName>Personio.Attendance.AttendanceRecord</TypeName>
+            </ViewSelectedBy>
+            <ListControl>
+                <ListEntries>
+                    <ListEntry>
+                        <ListItems>
+                            <ListItem>
+                                <PropertyName>Id</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <PropertyName>Employee</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <PropertyName>Project</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <PropertyName>Status</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <PropertyName>Date</PropertyName>
+                                <FormatString>yyyy-MM-dd</FormatString>
+                            </ListItem>
+                            <ListItem>
+                                <PropertyName>Start</PropertyName>
+                                <FormatString>HH:mm</FormatString>
+                            </ListItem>
+                            <ListItem>
+                                <PropertyName>End</PropertyName>
+                                <FormatString>HH:mm</FormatString>
+                            </ListItem>
+                            <ListItem>
+                                <PropertyName>Break</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <PropertyName>IsHoliday</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <PropertyName>IsAbsence</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <PropertyName>UpdatedAt</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <PropertyName>Comment</PropertyName>
+                            </ListItem>
+                        </ListItems>
+                    </ListEntry>
+                </ListEntries>
+            </ListControl>
+        </View>
+        <View>
+            <Name>Wide_Personio.Attendance.AttendanceRecord</Name>
+            <ViewSelectedBy>
+                <TypeName>Personio.Attendance.AttendanceRecord</TypeName>
+            </ViewSelectedBy>
+            <WideControl>
+                <AutoSize />
+                <WideEntries>
+                    <WideEntry>
+                        <WideItem>
+                            <ScriptBlock>"$($_.employee): $(Get-Date $_.Date -Format 'yyyy-MM-dd') $(get-date $_.Start -Format 'HH:mm')-$(Get-Date $_.End -Format 'HH:mm')"</ScriptBlock>
                         </WideItem>
                     </WideEntry>
                 </WideEntries>

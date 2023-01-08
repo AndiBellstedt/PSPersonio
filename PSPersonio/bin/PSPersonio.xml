@@ -71,6 +71,16 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:Personio.Attendance.AttendanceRecord">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Attendance.AttendanceRecord.Employee">
+             <summary>
+            
+             </summary>
+        </member>
         <member name="T:Personio.Core.AccessToken">
              <summary>
             

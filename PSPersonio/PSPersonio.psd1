@@ -3,7 +3,7 @@
     RootModule        = 'PSPersonio.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '0.0.5'
+    ModuleVersion     = '0.0.6'
 
     # ID used to uniquely identify this module
     GUID              = 'd12fa74a-f464-41fc-a4a6-2bf9d9f9c0fa'
@@ -50,6 +50,9 @@
         'New-PERSAbsence',
         'Remove-PERSAbsence',
         'Get-PERSAbsenceSummary',
+
+        # Attendance
+        'Get-PERSAttendance',
 
         # Employee
         'Get-PERSEmployee'
