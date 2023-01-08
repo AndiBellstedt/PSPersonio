@@ -19,6 +19,42 @@
             
              </summary>
         </member>
+        <member name="T:Personio.Absence.AbsenceSummaryRecord">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Absence.AbsenceSummaryRecord.BaseObject">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Absence.AbsenceSummaryRecord.AbsenceType">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Absence.AbsenceSummaryRecord.Employee">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Absence.AbsenceSummaryRecord.Category">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Absence.AbsenceSummaryRecord.Balance">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="M:Personio.Absence.AbsenceSummaryRecord.ToString">
+            <summary>
+            Overrides the default ToString() method
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:Personio.Absence.AbsenceType">
              <summary>
             
@@ -126,6 +162,21 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:Personio.Core.Cache">
+            <summary>
+            Hashtables for cache data to exchange content between runspaces
+            </summary>
+        </member>
+        <member name="F:Personio.Core.Cache.Data">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Personio.Core.Cache.StopValidationRunspace">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:Personio.Employee.BasicEmployee">
              <summary>
             
@@ -141,6 +192,16 @@
             Overrides the default ToString() method
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:Personio.Employee.BasicEmployee.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Personio.Employee.BasicEmployee.#ctor(System.Int32)">
+            <summary>
+            input Id
+            </summary>
         </member>
         <member name="T:Personio.Object">
              <summary>
