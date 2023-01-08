@@ -25,9 +25,9 @@
         If this switch is enabled, you will be prompted for confirmation before executing any operations that change state.
 
     .EXAMPLE
-        PS C:\> New-PS1XML -Path C:\MyObject.Format.ps1xml -TypeName MY.Object
+        PS C:\> New-PS1XML -Path C:\MyObject.Format.ps1xml -TypeName MY.Object -PropertyList $PropertyList
 
-        Register the Personio.Core.AccessToken from variable $rawToken to module wide vaiable $PersonioToken
+        Create MyObject.Format.ps1xml in C:\ with TypeFormat on object My.Object with property names set in $PropertyList
     #>
     [cmdletbinding(
         PositionalBinding = $true,
@@ -38,7 +38,7 @@
         [ValidateNotNullOrEmpty()]
         [Parameter(Mandatory = $true)]
         [string]
-        $Path, # = "C:\Administration\Logs\test.format.ps1xml",
+        $Path,
 
         [ValidateNotNullOrEmpty()]
         [Parameter(Mandatory = $true)]
@@ -110,9 +110,9 @@
 
         #region Start <TableColumnHeader>
         foreach ($property in $PropertyList) {
-            $xmlWriter.WriteElementString("TableColumnHeader", "$($property)")
-            #$xmlWriter.WriteStartElement("TableColumnHeader")
-            #$xmlWriter.WriteEndElement()
+            $xmlWriter.WriteStartElement("TableColumnHeader")
+            $xmlWriter.WriteElementString("Label", "$($property)")
+            $xmlWriter.WriteEndElement()
         }
         #endregion End <TableColumnHeader>
 
@@ -139,6 +139,45 @@
 
         $xmlWriter.WriteEndElement()
         #endregion End <TableControl>
+
+        $xmlWriter.WriteEndElement()
+        #endregion End <View>
+    }
+
+    if ($View -in @("List", "All") ) {
+        Write-PSFMessage -Level Verbose -Message "Generate list view for type $($TypeName)" -Tag "FormatType", "Format.ps1xml", "ListView"
+
+        #region Start <View>
+        $xmlWriter.WriteStartElement("View")
+
+        # Element <Name>
+        $xmlWriter.WriteElementString("Name", "List_$($TypeName)")
+
+        #region Start <ViewSelectedBy>
+        $xmlWriter.WriteStartElement("ViewSelectedBy")
+        $xmlWriter.WriteElementString("TypeName", "$($TypeName)")
+        $xmlWriter.WriteEndElement()
+        #endregion End <ViewSelectedBy>
+
+        #region Start <ListControl><ListEntries><ListEntry><ListItems>
+        $xmlWriter.WriteStartElement("ListControl")
+        $xmlWriter.WriteStartElement("ListEntries")
+        $xmlWriter.WriteStartElement("ListEntry")
+        $xmlWriter.WriteStartElement("ListItems")
+
+        #region Start <ListItem> <PropertyName>
+        foreach ($property in $PropertyList) {
+            $xmlWriter.WriteStartElement("ListItem")
+            $xmlWriter.WriteElementString("PropertyName", $property)
+            $xmlWriter.WriteEndElement()
+        }
+        #endregion End <ListItem> <PropertyName>
+
+        $xmlWriter.WriteEndElement()
+        $xmlWriter.WriteEndElement()
+        $xmlWriter.WriteEndElement()
+        $xmlWriter.WriteEndElement()
+        #endregion End <ListControl><ListEntries><ListEntry><ListItems>
 
         $xmlWriter.WriteEndElement()
         #endregion End <View>
@@ -180,45 +219,6 @@
         $xmlWriter.WriteEndElement()
         $xmlWriter.WriteEndElement()
         #endregion End <WideControl><WideEntries><WideEntry>
-
-        $xmlWriter.WriteEndElement()
-        #endregion End <View>
-    }
-
-    if ($View -in @("List", "All") ) {
-        Write-PSFMessage -Level Verbose -Message "Generate list view for type $($TypeName)" -Tag "FormatType", "Format.ps1xml", "ListView"
-
-        #region Start <View>
-        $xmlWriter.WriteStartElement("View")
-
-        # Element <Name>
-        $xmlWriter.WriteElementString("Name", "List_$($TypeName)")
-
-        #region Start <ViewSelectedBy>
-        $xmlWriter.WriteStartElement("ViewSelectedBy")
-        $xmlWriter.WriteElementString("TypeName", "$($TypeName)")
-        $xmlWriter.WriteEndElement()
-        #endregion End <ViewSelectedBy>
-
-        #region Start <ListControl><ListEntries><ListEntry><ListItems>
-        $xmlWriter.WriteStartElement("ListControl")
-        $xmlWriter.WriteStartElement("ListEntries")
-        $xmlWriter.WriteStartElement("ListEntry")
-        $xmlWriter.WriteStartElement("ListItems")
-
-        #region Start <ListItem> <PropertyName>
-        foreach ($property in $PropertyList) {
-            $xmlWriter.WriteStartElement("ListItem")
-            $xmlWriter.WriteElementString("PropertyName", $property)
-            $xmlWriter.WriteEndElement()
-        }
-        #endregion End <ListItem> <PropertyName>
-
-        $xmlWriter.WriteEndElement()
-        $xmlWriter.WriteEndElement()
-        $xmlWriter.WriteEndElement()
-        $xmlWriter.WriteEndElement()
-        #endregion End <ListControl><ListEntries><ListEntry><ListItems>
 
         $xmlWriter.WriteEndElement()
         #endregion End <View>
