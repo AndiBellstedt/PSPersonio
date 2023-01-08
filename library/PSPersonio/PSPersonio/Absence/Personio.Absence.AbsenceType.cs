@@ -26,6 +26,8 @@ namespace Personio.Absence {
         public override string ToString () {
             if (!string.IsNullOrEmpty(Name)) {
                 _returnValue = Name;
+            } else if (string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Convert.ToString(Id))) {
+                _returnValue = Convert.ToString(Id);
             } else {
                 _returnValue = this.GetType().Name;
             }
