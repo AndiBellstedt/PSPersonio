@@ -49,7 +49,7 @@
         If this switch is enabled, you will be prompted for confirmation before executing any operations that change state.
 
     .EXAMPLE
-        PS C:\> New-PERSAbsence -Employee (Get-PERSEmployee -Email john.doe@company.com) -Type (Get-PERSAbsenceType -Name Urlaub) -StartDate 01.01.2023 -EndDate 05.01.2023
+        PS C:\> New-PERSAbsence -Employee (Get-PERSEmployee -Email john.doe@company.com) -Type (Get-PERSAbsenceType -Name "Vacation") -StartDate 01.01.2023 -EndDate 05.01.2023
 
         Create a new absence for "John Doe" of type "Urlaub" from 01.01.2023 until 05.01.2023
 
