@@ -26,6 +26,8 @@ namespace Personio.Employee {
         public override string ToString () {
             if (!string.IsNullOrEmpty(Name)) {
                 _returnValue = Name;
+            } else if (string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Convert.ToString(Id))) {
+                _returnValue = Convert.ToString(Id);
             } else {
                 _returnValue = this.GetType().Name;
             }
@@ -33,5 +35,23 @@ namespace Personio.Employee {
             return _returnValue;
         }
         #endregion Statics & Stuff
+
+
+        #region Constructors
+        /// <summary>
+        /// 
+        /// </summary>
+        public BasicEmployee () {
+        }
+
+        /// <summary>
+        /// input Id
+        /// </summary>
+        public BasicEmployee (int Id) {
+            this.Id = Id;
+        }
+
+        #endregion Constructors
+
     }
 }
