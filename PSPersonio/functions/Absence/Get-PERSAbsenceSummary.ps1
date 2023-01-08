@@ -15,6 +15,10 @@
     .PARAMETER Filter
         The name of the absence type to filter on
 
+    .PARAMETER IncludeZeroValues
+        If this is specified, all the absence types will be outputted.
+        Be default, only absence summary records with a balance value greater than 0 are returned
+
     .PARAMETER Token
         AccessToken object for Personio service
 
@@ -68,28 +72,31 @@
         [string[]]
         $Filter,
 
+        [switch]
+        $IncludeZeroValues,
+
         [Personio.Core.AccessToken]
         $Token
     )
 
     begin {
-        $absenceTypes = Get-PERSAbsenceType
+        if ($MyInvocation.BoundParameters['Token']) {
+            $absenceTypes = Get-PERSAbsenceType -Token $Token
+        } else {
+            $absenceTypes = Get-PERSAbsenceType
+        }
+        $newTokenRequired = $true
     }
 
     process {
         # collect Employees from piped in IDs
         if ($MyInvocation.BoundParameters['EmployeeId']) {
-            $paramPERSEmployee = @{
-                "InputObject" = $EmployeeId
-            }
-            if ($MyInvocation.BoundParameters['Token']) { $paramPERSEmployee.Add("Token", $Token) }
-            $Employee = Get-PERSEmployee @paramPERSEmployee
-
-            $newTokenRequired = $true
+            $Employee = Get-PERSEmployee -InputObject $EmployeeId
         }
 
 
-        # Process employees
+        # Process employees and gather data
+        $output = [System.Collections.ArrayList]@()
         foreach ($employeeItem in $Employee) {
             # Prepare token
             if (-not $MyInvocation.BoundParameters['Token'] -or $newTokenRequired) { $Token = Get-AccessToken }
@@ -101,19 +108,15 @@
                 "Token"   = $Token
             }
 
-
             # Execute query
-            Write-PSFMessage -Level Verbose -Message "Getting available absence types" -Tag "AbsenceSummary", "Query"
+            Write-PSFMessage -Level Verbose -Message "Getting absence summary for '$($employeeItem)'" -Tag "AbsenceSummary", "Query"
             $response = Invoke-PERSRequest @invokeParam
-
 
             # Check respeonse
             if ($response.success) {
-
                 # Process result
-                $output = [System.Collections.ArrayList]@()
                 foreach ($record in $response.data) {
-                    Write-PSFMessage -Level Debug -Message "Working on record $($record.attributes.name) (ID: $($record.attributes.id))" -Tag "AbsenceSummary", "ObjectCreation"
+                    Write-PSFMessage -Level Debug -Message "Working on record $($record.name) (ID: $($record.id)) for '$($employeeItem)'" -Tag "AbsenceSummary", "ObjectCreation"
 
                     # process if filter is not specified or filter applies on record
                     if ((-not $Filter) -or ($Filter | ForEach-Object { $record.name -like $_ })) {
@@ -132,16 +135,20 @@
                         $null = $output.Add($result)
                     }
                 }
-                Write-PSFMessage -Level System -Message "Retrieve $($output.Count) objects of type [Personio.Absence.AbsenceSummaryRecord]" -Tag "AbsenceSummary", "Result"
-
-                # output final results
-                Write-PSFMessage -Level Verbose -Message "Output $($output.Count) objects" -Tag "AbsenceSummary", "Result", "Output"
-                $output
-
             } else {
                 Write-PSFMessage -Level Warning -Message "Personio api reported no data" -Tag "AbsenceSummary", "Query"
             }
         }
+        Write-PSFMessage -Level System -Message "Retrieve $($output.Count) objects of type [Personio.Absence.AbsenceSummaryRecord]" -Tag "AbsenceSummary", "Result"
+
+        if (-not $MyInvocation.BoundParameters['IncludeZeroValues']) {
+            $output = $output | Where-Object Balance -gt 0
+        }
+
+        # output final results
+        Write-PSFMessage -Level Verbose -Message "Output $($output.Count) objects" -Tag "AbsenceSummary", "Result", "Output"
+        $output
+
 
         # Cleanup variable
         Remove-Variable -Name Token -Force -WhatIf:$false -Confirm:$false -Verbose:$false -Debug:$false -ErrorAction Ignore -WarningAction Ignore -InformationAction Ignore
