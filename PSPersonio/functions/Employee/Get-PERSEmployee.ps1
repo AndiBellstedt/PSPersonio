@@ -79,6 +79,7 @@
             ValueFromPipeline = $true,
             ValueFromPipelineByPropertyName = $true
         )]
+        [Alias("Id", "EmployeeId")]
         [Personio.Employee.BasicEmployee[]]
         $InputObject,
 
