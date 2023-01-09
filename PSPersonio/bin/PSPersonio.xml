@@ -234,5 +234,10 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:Personio.Project.ProjectRecord">
+             <summary>
+            
+             </summary>
+        </member>
     </members>
 </doc>
