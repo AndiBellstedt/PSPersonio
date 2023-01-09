@@ -53,6 +53,8 @@
 
         # Attendance
         'Get-PERSAttendance',
+        'New-PERSAttendance',
+        'Remove-PERSAttendance',
 
         # Employee
         'Get-PERSEmployee'
