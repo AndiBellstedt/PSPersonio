@@ -12,8 +12,14 @@
     .PARAMETER TypeName
         Name of the type to create format file
 
+    .PARAMETER PropertyList
+        Name list of properties to put in format file
+
     .PARAMETER View
         The view to create in the format file
+
+    .PARAMETER Encoding
+        File encoding
 
     .PARAMETER PassThru
         Outputs the token to the console, even when the register switch is set

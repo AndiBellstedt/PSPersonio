@@ -12,7 +12,7 @@
     .PARAMETER EmployeeId
         Employee ID to create an absence
 
-    .PARAMETER Type
+    .PARAMETER AbsenceType
         The Absence type to create
 
     .PARAMETER AbsenceTypeId
@@ -59,6 +59,7 @@
     .LINK
         https://github.com/AndiBellstedt/PSPersonio
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseOutputTypeCorrectly", "")]
     [CmdletBinding(
         DefaultParameterSetName = "ApiNative",
         SupportsShouldProcess = $true,

@@ -72,11 +72,11 @@
 
         [ValidateNotNullOrEmpty()]
         [datetime]
-        $UpdateFrom,
+        $UpdatedFrom,
 
         [ValidateNotNullOrEmpty()]
         [datetime]
-        $UpdateTo,
+        $UpdatedTo,
 
         [Parameter(
             ValueFromPipeline = $true,
@@ -115,8 +115,8 @@
         }
 
         # fill query parameters
-        if ($MyInvocation.BoundParameters['UpdateFrom']) { $queryParameter.Add("updated_from", (Get-Date -Date $UpdateFrom -Format "yyyy-MM-dd")) }
-        if ($MyInvocation.BoundParameters['UpdateTo']) { $queryParameter.Add("updated_to", (Get-Date -Date $UpdateTo -Format "yyyy-MM-dd")) }
+        if ($MyInvocation.BoundParameters['UpdatedFrom']) { $queryParameter.Add("updated_from", (Get-Date -Date $UpdatedFrom -Format "yyyy-MM-dd")) }
+        if ($MyInvocation.BoundParameters['UpdatedTo']) { $queryParameter.Add("updated_to", (Get-Date -Date $UpdatedTo -Format "yyyy-MM-dd")) }
         if ($MyInvocation.BoundParameters['ResultSize']) {
             $queryParameter.Add("limit", $ResultSize)
             $queryParameter.Add("offset", 0)
@@ -193,8 +193,8 @@
         if (-not $MyInvocation.BoundParameters['InclusiveFiltering']) {
             if ($StartDate) { $output = $output | Where-Object Date -ge $StartDate }
             if ($EndDate) { $output = $output | Where-Object Date -le $EndDate }
-            if ($UpdateFrom) { $output = $output | Where-Object UpdatedAt -ge $UpdateFrom }
-            if ($UpdateTo) { $output = $output | Where-Object UpdatedAt -le $UpdateTo }
+            if ($UpdatedFrom) { $output = $output | Where-Object UpdatedAt -ge $UpdatedFrom }
+            if ($UpdatedTo) { $output = $output | Where-Object UpdatedAt -le $UpdatedTo }
         }
 
         # output final results

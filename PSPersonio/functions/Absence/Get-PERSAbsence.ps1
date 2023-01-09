@@ -70,11 +70,11 @@
 
         [Parameter(ParameterSetName = "Default")]
         [datetime]
-        $UpdateFrom,
+        $UpdatedFrom,
 
         [Parameter(ParameterSetName = "Default")]
         [datetime]
-        $UpdateTo,
+        $UpdatedTo,
 
         [Parameter(
             ParameterSetName = "Default",
@@ -118,8 +118,8 @@
         }
         if ($StartDate) { $queryParameter.Add("start_date", (Get-Date -Date $StartDate -Format "yyyy-MM-dd")) }
         if ($EndDate) { $queryParameter.Add("end_date", (Get-Date -Date $EndDate -Format "yyyy-MM-dd")) }
-        if ($UpdateFrom) { $queryParameter.Add("updated_from", (Get-Date -Date $UpdateFrom -Format "yyyy-MM-dd")) }
-        if ($UpdateTo) { $queryParameter.Add("updated_to", (Get-Date -Date $UpdateTo -Format "yyyy-MM-dd")) }
+        if ($UpdatedFrom) { $queryParameter.Add("updated_from", (Get-Date -Date $UpdatedFrom -Format "yyyy-MM-dd")) }
+        if ($UpdatedTo) { $queryParameter.Add("updated_to", (Get-Date -Date $UpdatedTo -Format "yyyy-MM-dd")) }
     }
 
     process {
@@ -213,8 +213,8 @@
             if (-not $MyInvocation.BoundParameters['InclusiveFiltering']) {
                 if ($StartDate) { $output = $output | Where-Object StartDate -ge $StartDate }
                 if ($EndDate) { $output = $output | Where-Object EndDate -le $EndDate }
-                if ($UpdateFrom) { $output = $output | Where-Object UpdatedAt -ge $UpdateFrom }
-                if ($UpdateTo) { $output = $output | Where-Object UpdatedAt -le $UpdateTo }
+                if ($UpdatedFrom) { $output = $output | Where-Object UpdatedAt -ge $UpdatedFrom }
+                if ($UpdatedTo) { $output = $output | Where-Object UpdatedAt -le $UpdatedTo }
             }
 
             # output final results

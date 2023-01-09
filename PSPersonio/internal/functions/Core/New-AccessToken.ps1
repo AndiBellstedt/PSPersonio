@@ -14,6 +14,9 @@
 
         Creates a Personio.Core.AccessToken from variable $rawToken
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingConvertToSecureStringWithPlainText", "")]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseShouldProcessForStateChangingFunctions", "")]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseOutputTypeCorrectly", "")]
     [cmdletbinding(PositionalBinding = $true)]
     [OutputType([Personio.Core.AccessToken])]
     param(

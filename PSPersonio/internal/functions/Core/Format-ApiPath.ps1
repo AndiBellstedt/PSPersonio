@@ -12,6 +12,9 @@
     .PARAMETER QueryParameter
         A hashtable for all the parameters to the api route
 
+    .PARAMETER Token
+        AccessToken object for Personio service
+
     .EXAMPLE
         Format-ApiPath -Path $ApiPath
 
