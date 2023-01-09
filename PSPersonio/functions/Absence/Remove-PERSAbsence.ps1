@@ -85,7 +85,7 @@
         if (-not $MyInvocation.BoundParameters['Token']) { $Token = Get-AccessToken }
 
         $parameterSetName = $pscmdlet.ParameterSetName
-        Write-PSFMessage -Level Debug -Message "ParameterNameSet: $($parameterSetName)" -Tag "AbsensePeriod", "New"
+        Write-PSFMessage -Level Debug -Message "ParameterNameSet: $($parameterSetName)" -Tag "AbsensePeriod", "Remove"
 
         # fill pipedin query parameters
         if ($parameterSetName -like "ApiNative") {

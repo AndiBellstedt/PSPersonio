@@ -187,7 +187,7 @@
             # add objects to output array
             $null = $output.Add($result)
         }
-        Write-PSFMessage -Level Verbose -Message "Retrieve $($output.Count) objects of type [Personio.Absence.AbsencePeriod]" -Tag "Attendance", "Result"
+        Write-PSFMessage -Level Verbose -Message "Retrieve $($output.Count) objects of type [Personio.Attendance.AttendanceRecord]" -Tag "Attendance", "Result"
 
         # Filtering
         if (-not $MyInvocation.BoundParameters['InclusiveFiltering']) {
