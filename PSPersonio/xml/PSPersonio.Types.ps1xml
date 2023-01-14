@@ -203,20 +203,20 @@
             <ScriptProperty>
                 <Name>HalfDayStart</Name>
                 <GetScriptBlock>
-                    [int]::Parse( $this.BaseObject.half_day_start )
+                    [bool]$this.BaseObject.half_day_start
                 </GetScriptBlock>
                 <SetScriptBlock>
-                    $this.BaseObject.half_day_start = $args[0]
+                    $this.BaseObject.half_day_start = [int]::Parse($args[0])
                 </SetScriptBlock>
             </ScriptProperty>
 
             <ScriptProperty>
                 <Name>HalfDayEnd</Name>
                 <GetScriptBlock>
-                    [int]::Parse( $this.BaseObject.half_day_end )
+                    [bool]$this.BaseObject.half_day_end
                 </GetScriptBlock>
                 <SetScriptBlock>
-                    $this.BaseObject.half_day_end = $args[0]
+                    $this.BaseObject.half_day_end = [int]::Parse($args[0])
                 </SetScriptBlock>
             </ScriptProperty>
 
