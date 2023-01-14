@@ -189,7 +189,7 @@
 
             # Execute query
             $response = Invoke-PERSRequest @invokeParam
-            Remove-Variable -Name Token, -Force -WhatIf:$false -Confirm:$false -Verbose:$false -Debug:$false -ErrorAction Ignore -WarningAction Ignore -InformationAction Ignore
+            Remove-Variable -Name Token -Force -WhatIf:$false -Confirm:$false -Verbose:$false -Debug:$false -ErrorAction Ignore -WarningAction Ignore -InformationAction Ignore
 
             # Check response and add to responseList
             if ($response.success) {
