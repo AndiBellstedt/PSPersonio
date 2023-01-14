@@ -373,10 +373,10 @@
             <ScriptProperty>
                 <Name>Department</Name>
                 <GetScriptBlock>
-                    $this.BaseObject.department.value
+                    $this.BaseObject.department.value.attributes.name
                 </GetScriptBlock>
                 <SetScriptBlock>
-                    $this.BaseObject.department.value = $args[0]
+                    $this.BaseObject.department.value.attributes.name = $args[0]
                 </SetScriptBlock>
             </ScriptProperty>
 

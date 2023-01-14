@@ -89,7 +89,7 @@
     $xmlWriter.WriteStartElement("Configuration")
     $xmlWriter.WriteStartElement("ViewDefinitions")
 
-    if ($View -in @("Table", "All") ) {
+    if ($View -like "Table" -or $View -like "All") {
         Write-PSFMessage -Level Verbose -Message "Generate table view for type $($TypeName)" -Tag "FormatType", "Format.ps1xml", "TableView"
 
         #region Start <View>
@@ -150,7 +150,7 @@
         #endregion End <View>
     }
 
-    if ($View -in @("List", "All") ) {
+    if ($View -like "List" -or $View -like "All") {
         Write-PSFMessage -Level Verbose -Message "Generate list view for type $($TypeName)" -Tag "FormatType", "Format.ps1xml", "ListView"
 
         #region Start <View>
@@ -189,7 +189,7 @@
         #endregion End <View>
     }
 
-    if ($View -in @("Wide", "All") ) {
+    if ($View -like "Wide" -or $View -like "All") {
         Write-PSFMessage -Level Verbose -Message "Generate wide view for type $($TypeName)" -Tag "FormatType", "Format.ps1xml", "WideView"
 
         #region Start <View>

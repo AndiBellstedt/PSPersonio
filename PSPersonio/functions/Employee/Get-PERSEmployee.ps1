@@ -89,8 +89,11 @@
     )
 
     begin {
-        # define query parameters
+        # define script parameters
         $queryParameter = [ordered]@{}
+        $typeNameBasic = "Personio.Employee.BasicEmployee"
+        $typeNameExtended = "Personio.Employee.ExtendedEmployee"
+        $memberNamesBasicEmployee = Expand-MemberNamesFromBasicObject -TypeName $typeNameBasic
 
         # fill query parameters
         if ($ResultSize) {
@@ -170,7 +173,7 @@
                 Write-PSFMessage -Level Debug -Message "Working on record Id $($record.attributes.id.value) name: $($record.attributes.first_name.value) $($record.attributes.last_name.value)" -Tag "Employee", "ObjectCreation"
 
                 # Create object
-                $result = [Personio.Employee.BasicEmployee]@{
+                $result = New-Object -TypeName $typeNameBasic -Property @{
                     BaseObject = $record.attributes
                     Id         = $record.attributes.id.value
                     Name       = "$($record.attributes.last_name.value), $($record.attributes.first_name.value)"
@@ -178,12 +181,11 @@
                 $result.psobject.TypeNames.Insert(1, "Personio.Employee.$($record.type)")
 
                 #region dynamic attribute checking and typeData Format generation
-                $dynamicAttributes = $result.BaseObject.psobject.Members | Where-Object name -like "dynamic_*"
+                $dynamicAttributeNames = $result.BaseObject.psobject.Properties.name | Where-Object { $_ -ne "id" -and $_ -NotIn $memberNamesBasicEmployee }
+                $dynamicAttributes = $result.BaseObject.psobject.Members | Where-Object name -in $dynamicAttributeNames
                 if ($dynamicAttributes) {
                     # Dynamic attributes found
-                    $typeNameBasic = $result.psobject.TypeNames[0]
-                    $typeNameExtended = "Personio.Employee.ExtendedEmployee"
-                    Write-PSFMessage -Level Debug -Message "Employee with dynamic attribute detected, create [$($typeNameExtended)] object" -Tag "Employee", "ObjectCreation", "ExtendedEmployee", "DynamicProperty"
+                    Write-PSFMessage -Level Debug -Message "Employee with dynamic attribute ('$([string]::Join("', '", $dynamicAttributeNames))') detected, create [$($typeNameExtended)] object" -Tag "Employee", "ObjectCreation", "ExtendedEmployee", "DynamicProperty"
 
                     # Add sythetic type on top of employee object
                     $result.psobject.TypeNames.Insert(0, $typeNameExtended)
@@ -191,24 +193,40 @@
                     # Check synthetic typeData definition & compile the gathered dynamic properties if needed
                     $typeExtendedEmployee = Get-TypeData -TypeName $typeNameExtended
                     $_modified = $false
+
                     foreach ($dynamicAttr in $dynamicAttributes) {
-                        if (-not ($dynamicAttr.Value.label -in $typeExtendedEmployee.Members.Keys)) {
+                        #$label = $dynamicAttr.Value.label.split(" ") | ConvertTo-CamelCaseString
+                        # get property name
+                        $memberName = $dynamicAttr.Value.label.split(" ") | ConvertTo-CamelCaseString
+                        if (-not ($memberName -in $typeExtendedEmployee.Members.Keys)) {
                             # dynamic property is new and currently not in TypeData defintion
-                            Write-PSFMessage -Level Debug -Message "Add dynamic attribute '$($dynamicAttr.Name)' as property '$($dynamicAttr.Value.label)' into TypeData for [$($typeNameExtended)]" -Tag "Employee", "ObjectCreation", "ExtendedEmployee", "DynamicProperty", "TypeData"
-                            Update-TypeData -TypeName $typeNameExtended -Force -MemberName $dynamicAttr.Value.label -MemberType ScriptProperty -Value ([scriptblock]::Create( "`$this.BaseObject.$($dynamicAttr.Name).value" ))
+
+                            # check if property is a direct value or a PSObject
+                            if (($dynamicAttr.Value.value.psobject.TypeNames | Select-Object -First 1) -like "System.Management.Automation.PSCustomObject") {
+                                if ($dynamicAttr.Value.value.attributes.psobject.Properties.name -like "value") {
+                                    [scriptblock]$value = [scriptblock]::Create( "`$this.BaseObject.$($dynamicAttr.Name).attributes.value" )
+                                } elseif ($dynamicAttr.Value.value.attributes.psobject.Properties.name -like "name") {
+                                    [scriptblock]$value = [scriptblock]::Create( "`$this.BaseObject.$($dynamicAttr.Name).attributes.name" )
+                                }
+                            } else {
+                                [scriptblock]$value = [scriptblock]::Create( "`$this.BaseObject.$($dynamicAttr.Name).value" )
+                            }
+
+                            Write-PSFMessage -Level Debug -Message "Add dynamic attribute '$($dynamicAttr.Name)' as property '$($memberName)' into TypeData for [$($typeNameExtended)]" -Tag "Employee", "ObjectCreation", "ExtendedEmployee", "DynamicProperty", "TypeData"
+                            Update-TypeData -TypeName $typeNameExtended -MemberType ScriptProperty -MemberName $memberName -Value $value -Force
+
                             $_modified = $true
                         }
                     }
 
-                    if ($_modified) {
+                    if ($_modified -or (-not (Get-FormatData -TypeName $typeNameExtended))) {
                         Write-PSFMessage -Level Verbose -Message "New dynamic attributes within employee detected. TypeData for [Personio.Employee.ExtendedEmployee] was modified. Going to compile FormatData" -Tag "Employee", "ObjectCreation", "ExtendedEmployee", "DynamicProperty", "FormatData"
                         $typeBasicEmployee = Get-TypeData -TypeName $typeNameBasic
-                        $typeExtendedEmployee = Get-TypeData -TypeName $typeNameExtended
                         $pathExtended = Join-Path -Path $env:TEMP -ChildPath "$($typeNameExtended).Format.ps1xml"
 
                         $properties = @( "Id", "Name")
                         $properties += $typeBasicEmployee.Members.Keys
-                        $properties += $typeExtendedEmployee.Members.Keys
+                        $properties += $dynamicAttributes.Value.label | ForEach-Object { $_.split(" ") | ConvertTo-CamelCaseString } #$typeExtendedEmployee.Members.Keys
                         $properties = $properties | Where-Object { $_ -notlike 'SerializationData' }
 
                         New-PS1XML -Path $pathExtended -TypeName $typeNameExtended -PropertyList $properties -View Table, List -Encoding UTF8
@@ -236,7 +254,7 @@
 
             # output final results
             Write-PSFMessage -Level Verbose -Message "Output $($output.Count) objects" -Tag "Employee", "Result", "Output"
-            foreach($item in $output) {
+            foreach ($item in $output) {
                 $item
             }
         }
