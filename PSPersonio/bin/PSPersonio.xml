@@ -1,0 +1,243 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PSPersonio</name>
+    </assembly>
+    <members>
+        <member name="T:Personio.Absence.AbsencePeriod">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Absence.AbsencePeriod.Type">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Absence.AbsencePeriod.Employee">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="T:Personio.Absence.AbsenceSummaryRecord">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Absence.AbsenceSummaryRecord.BaseObject">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Absence.AbsenceSummaryRecord.AbsenceType">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Absence.AbsenceSummaryRecord.Employee">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Absence.AbsenceSummaryRecord.Category">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Absence.AbsenceSummaryRecord.Balance">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="M:Personio.Absence.AbsenceSummaryRecord.ToString">
+            <summary>
+            Overrides the default ToString() method
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Personio.Absence.AbsenceType">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Absence.AbsenceType.Name">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="M:Personio.Absence.AbsenceType.ToString">
+            <summary>
+            Overrides the default ToString() method
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Personio.Attendance.AttendanceRecord">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Attendance.AttendanceRecord.Employee">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="T:Personio.Core.AccessToken">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Core.AccessToken.TokenID">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Core.AccessToken.ClientId">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Core.AccessToken.ApplicationId">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Core.AccessToken.ApplicationPartnerId">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Core.AccessToken.Issuer">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Core.AccessToken.Scope">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Core.AccessToken.Token">
+            <summary>
+            The actual access token
+            </summary>
+        </member>
+        <member name="F:Personio.Core.AccessToken.ApiUri">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Core.AccessToken.TimeStampCreated">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Core.AccessToken.TimeStampNotBefore">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Core.AccessToken.TimeStampExpires">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Core.AccessToken.TimeStampModified">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:Personio.Core.AccessToken.IsValid">
+            <summary>
+            Whether the token is valid for connections
+            </summary>
+        </member>
+        <member name="P:Personio.Core.AccessToken.AccessTokenLifeTime">
+            <summary>
+            The Lifetime of the Access Token
+            </summary>
+        </member>
+        <member name="P:Personio.Core.AccessToken.TimeRemaining">
+            <summary>
+            Remaining time of the token Lifetime
+            </summary>
+        </member>
+        <member name="P:Personio.Core.AccessToken.PercentRemaining">
+            <summary>
+            Percentage value of the Tokenlifetime
+            </summary>
+        </member>
+        <member name="M:Personio.Core.AccessToken.ToString">
+            <summary>
+            Overrides the default ToString() method
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Personio.Core.Cache">
+            <summary>
+            Hashtables for cache data to exchange content between runspaces
+            </summary>
+        </member>
+        <member name="F:Personio.Core.Cache.Data">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Personio.Core.Cache.StopValidationRunspace">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Personio.Employee.BasicEmployee">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Employee.BasicEmployee.Name">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="M:Personio.Employee.BasicEmployee.ToString">
+            <summary>
+            Overrides the default ToString() method
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Personio.Employee.BasicEmployee.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Personio.Employee.BasicEmployee.#ctor(System.Int32)">
+            <summary>
+            input Id
+            </summary>
+        </member>
+        <member name="T:Personio.Object">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Object.BaseObject">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Personio.Object.Id">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="M:Personio.Object.ToString">
+            <summary>
+            Overrides the default ToString() method
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Personio.Project.ProjectRecord">
+             <summary>
+            
+             </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,578 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Types>
+    <!-- Personio.Absence.AbsenceType -->
+    <Type>
+        <Name>Deserialized.Personio.Absence.AbsenceType</Name>
+        <Members>
+            <MemberSet>
+                <Name>PSStandardMembers</Name>
+                <Members>
+                    <NoteProperty>
+                        <Name>
+                            TargetTypeForDeserialization
+                        </Name>
+                        <Value>
+                            Personio.Absence.AbsenceType
+                        </Value>
+                    </NoteProperty>
+                </Members>
+            </MemberSet>
+        </Members>
+    </Type>
+    <Type>
+        <Name>Personio.Absence.AbsenceType</Name>
+        <Members>
+            <ScriptProperty>
+                <Name>Unit</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.unit
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.unit = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>Category</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.category
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.category = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>IsHalfDayRequestEnabled</Name>
+                <GetScriptBlock>
+                    [bool]::Parse( $this.BaseObject.half_day_requests_enabled )
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.half_day_requests_enabled = "$($args[0])"
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>IsCertificationRequired</Name>
+                <GetScriptBlock>
+                    [bool]::Parse( $this.BaseObject.certification_required )
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.certification_required = "$($args[0])"
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>CertificationSubmissionTimeframe</Name>
+                <GetScriptBlock>
+                    [int]::Parse( $this.BaseObject.certification_submission_timeframe )
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.certification_submission_timeframe = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>CertificationSubmissionTimeSpan</Name>
+                <GetScriptBlock>
+                    $timeSpanParam = @{
+                        $this.BaseObject.unit = [int]::Parse( $this.BaseObject.certification_submission_timeframe )
+                    }
+                    New-TimeSpan @timeSpanParam
+                </GetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>SubstituteOption</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.substitute_option
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.substitute_option = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>IsApprovalRequired</Name>
+                <GetScriptBlock>
+                    [bool]::Parse( $this.BaseObject.approval_required )
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.approval_required = "$($args[0])"
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <CodeProperty IsHidden="true">
+                <Name>SerializationData</Name>
+                <GetCodeReference>
+                    <TypeName>PSFramework.Serialization.SerializationTypeConverter</TypeName>
+                    <MethodName>GetSerializationData</MethodName>
+                </GetCodeReference>
+            </CodeProperty>
+        </Members>
+        <TypeConverter>
+            <TypeName>PSFramework.Serialization.SerializationTypeConverter</TypeName>
+        </TypeConverter>
+    </Type>
+
+
+    <!-- Personio.Absence.AbsencePeriod -->
+    <Type>
+        <Name>Deserialized.Personio.Absence.AbsencePeriod</Name>
+        <Members>
+            <MemberSet>
+                <Name>PSStandardMembers</Name>
+                <Members>
+                    <NoteProperty>
+                        <Name>
+                            TargetTypeForDeserialization
+                        </Name>
+                        <Value>
+                            Personio.Absence.AbsencePeriod
+                        </Value>
+                    </NoteProperty>
+                </Members>
+            </MemberSet>
+        </Members>
+    </Type>
+    <Type>
+        <Name>Personio.Absence.AbsencePeriod</Name>
+        <Members>
+            <ScriptProperty>
+                <Name>Status</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.status
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.status = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>Comment</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.comment
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.comment = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>StartDate</Name>
+                <GetScriptBlock>
+                    Get-Date $this.BaseObject.start_date
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $stringDate = $args[0] | Get-Date -Format o
+                    if($stringDate -like "*.*+*") {
+                        $parts = $stringDate.Split(".").Split("+")
+                        $this.BaseObject.start_date = $parts[0] + "+" + $parts[2]
+                    } else {
+                        $this.BaseObject.start_date = $stringDate
+                    }
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>EndDate</Name>
+                <GetScriptBlock>
+                    Get-Date $this.BaseObject.end_date
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $stringDate = $args[0] | Get-Date -Format o
+                    if($stringDate -like "*.*+*") {
+                        $parts = $stringDate.Split(".").Split("+")
+                        $this.BaseObject.end_date = $parts[0] + "+" + $parts[2]
+                    } else {
+                        $this.BaseObject.end_date = $stringDate
+                    }
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>DaysCount</Name>
+                <GetScriptBlock>
+                    [int]::Parse( $this.BaseObject.days_count )
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.days_count = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>HalfDayStart</Name>
+                <GetScriptBlock>
+                    [bool]$this.BaseObject.half_day_start
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.half_day_start = [int]::Parse($args[0])
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>HalfDayEnd</Name>
+                <GetScriptBlock>
+                    [bool]$this.BaseObject.half_day_end
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.half_day_end = [int]::Parse($args[0])
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>CreatedBy</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.created_by
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.created_by = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>CertificateStatus</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.certificate.status
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.certificate.status = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>CreatedAt</Name>
+                <GetScriptBlock>
+                    Get-Date $this.BaseObject.created_at
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $stringDate = $args[0] | Get-Date -Format o
+                    if($stringDate -like "*.*+*") {
+                        $parts = $stringDate.Split(".").Split("+")
+                        $this.BaseObject.created_at = $parts[0] + "+" + $parts[2]
+                    } else {
+                        $this.BaseObject.created_at = $stringDate
+                    }
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>UpdatedAt</Name>
+                <GetScriptBlock>
+                    Get-Date $this.BaseObject.updated_at
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    #$this.BaseObject.updated_at = $args[0]
+
+                    $stringDate = $args[0] | Get-Date -Format o
+                    if($stringDate -like "*.*+*") {
+                        $parts = $stringDate.Split(".").Split("+")
+                        $this.BaseObject.updated_at = $parts[0] + "+" + $parts[2]
+                    } else {
+                        $this.BaseObject.updated_at = $stringDate
+                    }
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <CodeProperty IsHidden="true">
+                <Name>SerializationData</Name>
+                <GetCodeReference>
+                    <TypeName>PSFramework.Serialization.SerializationTypeConverter</TypeName>
+                    <MethodName>GetSerializationData</MethodName>
+                </GetCodeReference>
+            </CodeProperty>
+        </Members>
+        <TypeConverter>
+            <TypeName>PSFramework.Serialization.SerializationTypeConverter</TypeName>
+        </TypeConverter>
+    </Type>
+
+
+    <!-- Personio.Employee.BasicEmployee -->
+    <Type>
+        <Name>Deserialized.Personio.Employee.BasicEmployee</Name>
+        <Members>
+            <MemberSet>
+                <Name>PSStandardMembers</Name>
+                <Members>
+                    <NoteProperty>
+                        <Name>
+                            TargetTypeForDeserialization
+                        </Name>
+                        <Value>
+                            Personio.Employee.BasicEmployee
+                        </Value>
+                    </NoteProperty>
+                </Members>
+            </MemberSet>
+        </Members>
+    </Type>
+    <Type>
+        <Name>Personio.Employee.BasicEmployee</Name>
+        <Members>
+            <ScriptProperty>
+                <Name>FirstName</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.first_name.value
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.first_name.value = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>LastName</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.last_name.value
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.last_name.value = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>Email</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.email.value
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.email.value = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>Gender</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.gender.value
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.gender.value = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>Position</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.position.value
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.position.value = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>Subcompany</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.subcompany.value
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.subcompany.value = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>Department</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.department.value.attributes.name
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.department.value.attributes.name = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>Office</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.office.value
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.office.value = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>HireDate</Name>
+                <GetScriptBlock>
+                    Get-Date $this.BaseObject.hire_date.value
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    #$this.BaseObject.hire_date.value = $args[0]
+
+                    $stringDate = $args[0] | Get-Date -Format o
+                    if($stringDate -like "*.*+*") {
+                        $parts = $stringDate.Split(".").Split("+")
+                        $this.BaseObject.hire_date.value = $parts[0] + "+" + $parts[2]
+                    } else {
+                        $this.BaseObject.hire_date.value = $stringDate
+                    }
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>WeeklyWorkingHours</Name>
+                <GetScriptBlock>
+                    [int]::Parse( $this.BaseObject.weekly_working_hours.value )
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.weekly_working_hours.value = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <CodeProperty IsHidden="true">
+                <Name>SerializationData</Name>
+                <GetCodeReference>
+                    <TypeName>PSFramework.Serialization.SerializationTypeConverter</TypeName>
+                    <MethodName>GetSerializationData</MethodName>
+                </GetCodeReference>
+            </CodeProperty>
+        </Members>
+        <TypeConverter>
+            <TypeName>PSFramework.Serialization.SerializationTypeConverter</TypeName>
+        </TypeConverter>
+    </Type>
+
+
+    <!-- Personio.Attendance.AttendanceRecord -->
+    <Type>
+        <Name>Deserialized.Personio.Attendance.AttendanceRecord</Name>
+        <Members>
+            <MemberSet>
+                <Name>PSStandardMembers</Name>
+                <Members>
+                    <NoteProperty>
+                        <Name>
+                            TargetTypeForDeserialization
+                        </Name>
+                        <Value>
+                            Personio.Attendance.AttendanceRecord
+                        </Value>
+                    </NoteProperty>
+                </Members>
+            </MemberSet>
+        </Members>
+    </Type>
+    <Type>
+        <Name>Personio.Attendance.AttendanceRecord</Name>
+        <Members>
+            <ScriptProperty>
+                <Name>Date</Name>
+                <GetScriptBlock>
+                    Get-Date $this.BaseObject.date
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.date = Get-Date $args[0] -Format "yyyy-MM-dd"
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>Start</Name>
+                <GetScriptBlock>
+                    Get-Date "$($this.BaseObject.date) $($this.BaseObject.start_time)"
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.start_time = Get-Date $args[0] -Format "HH:mm"
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>End</Name>
+                <GetScriptBlock>
+                    Get-Date "$($this.BaseObject.date) $($this.BaseObject.end_time)"
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.end_time = Get-Date $args[0] -Format "HH:mm"
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>Break</Name>
+                <GetScriptBlock>
+                    [int]::Parse( $this.BaseObject.break )
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.break = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>Comment</Name>
+                <GetScriptBlock>
+                    $this.BaseObject.comment
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    $this.BaseObject.comment = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>UpdatedAt</Name>
+                <GetScriptBlock>
+                    Get-Date $this.BaseObject.updated_at
+                </GetScriptBlock>
+                <SetScriptBlock>
+                    #$this.BaseObject.updated_at = $args[0]
+
+                    $stringDate = $args[0] | Get-Date -Format o
+                    if($stringDate -like "*.*+*") {
+                        $parts = $stringDate.Split(".").Split("+")
+                        $this.BaseObject.updated_at = $parts[0] + "+" + $parts[2]
+                    } else {
+                        $this.BaseObject.updated_at = $stringDate
+                    }
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>Status</Name>
+                <GetScriptBlock>
+                        $this.BaseObject.status
+                </GetScriptBlock>
+                <SetScriptBlock>
+                        $this.BaseObject.status = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>Project</Name>
+                <GetScriptBlock>
+                        $this.BaseObject.project
+                </GetScriptBlock>
+                <SetScriptBlock>
+                        $this.BaseObject.project = $args[0]
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>IsHoliday</Name>
+                <GetScriptBlock>
+                        [bool]::Parse( $this.BaseObject.is_holiday )
+                </GetScriptBlock>
+                <SetScriptBlock>
+                        $this.BaseObject.is_holiday = "$($args[0])"
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <ScriptProperty>
+                <Name>IsAbsence</Name>
+                <GetScriptBlock>
+                        [bool]::Parse( $this.BaseObject.is_on_time_off )
+                </GetScriptBlock>
+                <SetScriptBlock>
+                        $this.BaseObject.is_on_time_off = "$($args[0])"
+                </SetScriptBlock>
+            </ScriptProperty>
+
+            <CodeProperty IsHidden="true">
+                <Name>SerializationData</Name>
+                <GetCodeReference>
+                    <TypeName>PSFramework.Serialization.SerializationTypeConverter</TypeName>
+                    <MethodName>GetSerializationData</MethodName>
+                </GetCodeReference>
+            </CodeProperty>
+        </Members>
+        <TypeConverter>
+            <TypeName>PSFramework.Serialization.SerializationTypeConverter</TypeName>
+        </TypeConverter>
+    </Type>
+
+</Types>
