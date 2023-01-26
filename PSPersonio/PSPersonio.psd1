@@ -3,7 +3,7 @@
     RootModule         = 'PSPersonio.psm1'
 
     # Version number of this module.
-    ModuleVersion      = '0.1.0'
+    ModuleVersion      = '0.1.1'
 
     # ID used to uniquely identify this module
     GUID               = 'd12fa74a-f464-41fc-a4a6-2bf9d9f9c0fa'
@@ -93,7 +93,7 @@
             ProjectUri   = 'https://github.com/AndiBellstedt/PSPersonio'
 
             # A URL to an icon representing this module.
-            IconUri      = 'https://github.com/AndiBellstedt/PSPersonio/raw/master/assets/PSPersonio_128x128.png'
+            IconUri      = 'https://github.com/AndiBellstedt/PSPersonio/raw/main/assets/PSPersonio_128x128.png'
 
             # ReleaseNotes of this module
             ReleaseNotes = 'https://github.com/AndiBellstedt/PSPersonio/blob/main/PSPersonio/changelog.md'
