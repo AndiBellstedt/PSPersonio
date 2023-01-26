@@ -16,7 +16,6 @@
     #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingConvertToSecureStringWithPlainText", "")]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseShouldProcessForStateChangingFunctions", "")]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseOutputTypeCorrectly", "")]
     [cmdletbinding(PositionalBinding = $true)]
     [OutputType([Personio.Core.AccessToken])]
     param(
@@ -31,7 +30,7 @@
 
     # Create output token
     Write-PSFMessage -Level System -Message "Creating Personio.Core.AccessToken object" -Tag "AccessToken", "Create"
-    $token = [Personio.Core.AccessToken]@{
+    $token = New-Object -TypeName Personio.Core.AccessToken -ArgumentList @{
         TokenID              = $tokenInfo.JwtId
         ClientId             = $tokenInfo.ClientId
         ApplicationId        = $applicationIdentifier

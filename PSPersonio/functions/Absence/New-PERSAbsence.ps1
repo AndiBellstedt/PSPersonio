@@ -59,13 +59,13 @@
     .LINK
         https://github.com/AndiBellstedt/PSPersonio
     #>
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseOutputTypeCorrectly", "")]
     [CmdletBinding(
         DefaultParameterSetName = "ApiNative",
         SupportsShouldProcess = $true,
         PositionalBinding = $true,
         ConfirmImpact = 'Medium'
     )]
+    [OutputType([Personio.Absence.AbsencePeriod])]
     Param(
         [Parameter(
             ParameterSetName = "UserFriendly",

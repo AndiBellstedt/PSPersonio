@@ -19,6 +19,7 @@
         SupportsShouldProcess=$false,
         ConfirmImpact="Low"
     )]
+    [OutputType([string])]
     param (
         [Parameter(
             Mandatory=$true,
