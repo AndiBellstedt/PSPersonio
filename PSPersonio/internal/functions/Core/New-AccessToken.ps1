@@ -30,7 +30,7 @@
 
     # Create output token
     Write-PSFMessage -Level System -Message "Creating Personio.Core.AccessToken object" -Tag "AccessToken", "Create"
-    $token = New-Object -TypeName Personio.Core.AccessToken -ArgumentList @{
+    $token = [Personio.Core.AccessToken]@{
         TokenID              = $tokenInfo.JwtId
         ClientId             = $tokenInfo.ClientId
         ApplicationId        = $applicationIdentifier
