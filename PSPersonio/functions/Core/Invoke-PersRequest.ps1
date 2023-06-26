@@ -86,11 +86,11 @@
         # Check AccessToken
         if (-not $MyInvocation.BoundParameters['Token']) { $Token = Get-AccessToken }
         if (-not $Token) { Stop-PSFFunction -Message "No AccessToken found. Please connect to personio service frist. Use Connect-Personio command." -Tag "Connection", "MissingToken" -EnableException $true -Cmdlet $pscmdlet }
-        #if ($Token.IsValid) {
-        #    Write-PSFMessage -Level System -Message "Valid AccessTokenId '$($Token.TokenID.ToString())' for service '$($Token.ApiUri)'." -Tag "WebRequest", "Token"
-        #} else {
-        #    Stop-PSFFunction -Message "AccessTokenId '$($Token.TokenID.ToString())' is not valid. Please reconnect to personio service. Use Connect-Personio command." -Tag "Connection", "InvalidToken" -EnableException $true -Cmdlet $pscmdlet
-        #}
+        if ($Token.IsValid) {
+            Write-PSFMessage -Level System -Message "Valid AccessTokenId '$($Token.TokenID.ToString())' for service '$($Token.ApiUri)'." -Tag "WebRequest", "Token"
+        } else {
+            Stop-PSFFunction -Message "AccessTokenId '$($Token.TokenID.ToString())' is not valid. Please reconnect to personio service. Use Connect-Personio command." -Tag "Connection", "InvalidToken" -EnableException $true -Cmdlet $pscmdlet
+        }
 
 
         # Get AppIds

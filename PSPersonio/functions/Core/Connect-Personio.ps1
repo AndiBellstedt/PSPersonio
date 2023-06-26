@@ -157,7 +157,7 @@
 
         # Create output token
         Write-PSFMessage -Level Verbose -Message "Set Personio.Core.AccessToken" -Tag "Connection", "AccessToken", "New"
-        $token = New-AccessToken -RawToken $response.data.token
+        $token = New-AccessToken -RawToken $response.data.token -ClientId $ClientId
 
         # Register AccessToken for further commands
         Register-AccessToken -Token $token
