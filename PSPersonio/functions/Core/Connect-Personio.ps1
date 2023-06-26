@@ -121,13 +121,19 @@
 
         # Invoke authentication
         Write-PSFMessage -Level Verbose -Message "Authenticate '$($ClientId)' as application '$($applicationIdentifier)' to service '$($uri.AbsoluteUri)'" -Tag "Connection", "Authentication", "New"
+        $body = @{
+            "client_id"     = $($ClientId)
+            "client_secret" = $($ClientSecret)
+        }
         $paramRestMethod = @{
-            "Uri"           = "$($uri.AbsoluteUri)/auth?client_id=$($ClientId)&client_secret=$($ClientSecret)"
+            "Uri"           = "$($uri.AbsoluteUri)/auth"
             "Headers"       = @{
                 "X-Personio-Partner-ID" = $partnerIdentifier
                 "X-Personio-App-ID"     = $applicationIdentifier
                 "accept"                = "application/json"
+                "content-type"          = "application/json"
             }
+            "Body"          = ($body | ConvertTo-Json)
             "Method"        = "POST"
             "Verbose"       = $false
             "Debug"         = $false
@@ -135,7 +141,7 @@
             "ErrorVariable" = "invokeError"
         }
         try {
-            $response = Invoke-RestMethod @paramRestMethod
+            $response = Invoke-RestMethod @paramRestMethod -ContentType 'application/json'
         } catch {
             Stop-PSFFunction -Message "Error invoking rest call on service '$($uri.AbsoluteUri)'. $($invokeError)" -Tag "Connection", "Authentication", "New" -EnableException $true -Cmdlet $pscmdlet
         }
@@ -151,7 +157,7 @@
 
         # Create output token
         Write-PSFMessage -Level Verbose -Message "Set Personio.Core.AccessToken" -Tag "Connection", "AccessToken", "New"
-        $token = New-AccessToken -RawToken $response.data.token
+        $token = New-AccessToken -RawToken $response.data.token -ClientId $ClientId
 
         # Register AccessToken for further commands
         Register-AccessToken -Token $token

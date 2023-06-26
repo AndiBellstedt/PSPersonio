@@ -50,7 +50,7 @@
         "Algorithm"    = $tokenHeaderJSON.alg
         "Type"         = $tokenHeaderJSON.typ
 
-        "JwtId"        = [guid]::Parse($tokenPayloadJSON.jti)
+        "Id"           = [guid]::Parse($tokenPayloadJSON.jti)
         "Issuer"       = $tokenPayloadJSON.iss
         "Scope"        = $tokenPayloadJSON.scope
 
