@@ -1,4 +1,9 @@
 ﻿# Changelog
+## 0.1.4 (2023-07-11)
+ - Fix:
+    - Personio.Absence.AbsencePeriod: \
+    Fix wrong type definition on member "DaysCount". Previously, it was an \[int\], actually it is a \[float\]
+
 ## 0.1.3 (2023-06-28)
  - Upd:
     - Connect-Personio: Starting June 2023 Personio decides to step away from JWT tokens and began to invent a service specific token format. This update handles both behaviours.\
