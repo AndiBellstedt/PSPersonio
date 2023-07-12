@@ -193,10 +193,10 @@
             <ScriptProperty>
                 <Name>DaysCount</Name>
                 <GetScriptBlock>
-                    [int]::Parse( $this.BaseObject.days_count )
+                    [float]::Parse( $this.BaseObject.days_count )
                 </GetScriptBlock>
                 <SetScriptBlock>
-                    $this.BaseObject.days_count = $args[0]
+                    $this.BaseObject.days_count = [float]$args[0]
                 </SetScriptBlock>
             </ScriptProperty>
 
