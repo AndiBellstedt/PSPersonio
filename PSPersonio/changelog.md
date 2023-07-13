@@ -1,4 +1,10 @@
 ﻿# Changelog
+## 0.1.4.1 (2023-07-13)
+ - Fix:
+    - Personio.Absence.AbsencePeriod: \
+    Fix wrong type definition on member "DaysCount". Now, it is \[System.Decimal\]
+
+
 ## 0.1.4 (2023-07-11)
  - Fix:
     - Personio.Absence.AbsencePeriod: \
